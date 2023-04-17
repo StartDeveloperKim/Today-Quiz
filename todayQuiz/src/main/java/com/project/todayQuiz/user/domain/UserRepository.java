@@ -1,2 +1,6 @@
-package com.project.todayQuiz.user.domain;public interface UserRepository {
+package com.project.todayQuiz.user.domain;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Long> {
 }
