@@ -1,4 +1,4 @@
-package com.project.todayQuiz.auth.jwt;
+package com.project.todayQuiz.auth.jwt.dto;
 
 import lombok.Getter;
 import lombok.ToString;

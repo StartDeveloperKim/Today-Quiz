@@ -1,5 +1,8 @@
 package com.project.todayQuiz.auth.jwt;
 
+import com.project.todayQuiz.auth.jwt.dto.TokenResponse;
+import com.project.todayQuiz.auth.jwt.dto.UserInfo;
+import com.project.todayQuiz.auth.jwt.refreshToken.RefreshTokenDao;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +12,10 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Component
@@ -21,14 +23,16 @@ import java.util.Map;
 public class TokenProvider {
 
     private final Key secretKey;
+    private final RefreshTokenDao refreshTokenDao;
 
     private static final String NICKNAME = "nickname";
     private static final String ISSUER = "Today-Quiz";
 
     @Autowired
-    public TokenProvider(@Value("${jwt.secret}") String key) {
+    public TokenProvider(@Value("${jwt.secret}") String key, RefreshTokenDao refreshTokenDao) {
         byte[] bytes = key.getBytes();
         this.secretKey = new SecretKeySpec(bytes, "HmacSHA256");
+        this.refreshTokenDao = refreshTokenDao;
     }
 
     public String createAccessToken(String email, String nickname) {
@@ -41,6 +45,17 @@ public class TokenProvider {
         // 현재는 하루지만 나중에 한달로 고치자
         Date expiryDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
         return createToken(email, nickname, expiryDate);
+    }
+
+    public TokenResponse reissueAccessToken(String refreshToken) {
+        String email = refreshTokenDao.getEmail(refreshToken);
+        UserInfo userInfo = getTokenInfo(refreshToken);
+        if (email != null && email.equals(userInfo.getEmail())) {
+            String newRefreshToken = createRefreshToken(userInfo.getEmail(), userInfo.getNickname());
+            refreshTokenDao.saveRefreshToken(newRefreshToken, email, Duration.ofDays(1));
+            return new TokenResponse(createAccessToken(userInfo.getEmail(), userInfo.getNickname()), newRefreshToken);
+        }
+        return null;
     }
 
     private String createToken(String email, String nickname, Date expiryDate) {
