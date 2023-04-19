@@ -24,6 +24,8 @@ public class User {
 
     private String picture;
 
+    private String authProvider;
+
     @Column(nullable = false, unique = true, length = 20)
     private String nickname;
 
@@ -34,9 +36,10 @@ public class User {
     private LocalDateTime joinDate;
 
     @Builder
-    public User(String email, String picture, String nickname, Role role) {
+    public User(String email, String picture, String authProvider, String nickname, Role role) {
         this.email = email;
         this.picture = picture;
+        this.authProvider = authProvider;
         this.nickname = nickname;
         this.role = role;
         this.joinDate = LocalDateTime.now();
@@ -46,5 +49,13 @@ public class User {
         this.nickname = nickname;
     }
 
+    public User update(String picture) {
+        this.picture = picture;
+        return this;
+    }
+
+    public String getRoleKey() {
+        return this.role.getKey();
+    }
 
 }

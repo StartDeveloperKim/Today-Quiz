@@ -1,22 +1,34 @@
 package com.project.todayQuiz.config;
 
 import com.project.todayQuiz.auth.jwt.JwtAuthenticationFilter;
+import com.project.todayQuiz.auth.jwt.RefreshTokenService;
+import com.project.todayQuiz.auth.jwt.TokenProvider;
+import com.project.todayQuiz.auth.oauth.OAuthSuccessHandler;
+import com.project.todayQuiz.auth.oauth.OAuthUserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.filters.CorsFilter;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final OAuthUserServiceImpl oAuthUserService;
+    private final OAuthSuccessHandler oAuthSuccessHandler;
+
+    private final TokenProvider tokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -31,32 +43,43 @@ public class WebSecurityConfig {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/login", "/logout", "/reissue", "/oauth2/**").permitAll()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                .antMatchers("/", "/login", "/logout", "/reissue", "/oauth2/**", "/auth").permitAll()
                 .anyRequest().authenticated()
+
+//                .and()
+//                .oauth2Login()
+//                .redirectionEndpoint()
+//                .baseUri("/oauth2/callback/*")
+
+//                .and()
+//                .authorizationEndpoint()
+//                .baseUri("/auth/authorize")
 
                 .and()
                 .oauth2Login()
-                .redirectionEndpoint()
-                .baseUri("/oauth2/callback/*")
-
-                .and()
-                .authorizationEndpoint()
-                .baseUri("/auth/authorize")
-
-                .and()
                 .userInfoEndpoint()
-                .userService(null)
+                .userService(oAuthUserService)
 
                 .and()
-                .successHandler(null)
+                .successHandler(oAuthSuccessHandler)
+
+                .and()
+                .logout()
+                .logoutSuccessUrl("/")
 
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
 
                 .and()
-                .addFilterAfter(jwtAuthenticationFilter, CorsFilter.class);
+                .addFilterAfter(new JwtAuthenticationFilter(tokenProvider, refreshTokenService), BasicAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 }

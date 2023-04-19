@@ -23,7 +23,6 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Slf4j
-@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
@@ -33,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String accessToken = parseAccessToken(request);
-            log.info("JWT Filter running...");
+            log.info("JWT Filter running... {}", request.getRequestURI());
 
             if (accessToken != null && tokenProvider.validateToken(accessToken)) {
                 log.info("AccessToken Info : {}", accessToken);
