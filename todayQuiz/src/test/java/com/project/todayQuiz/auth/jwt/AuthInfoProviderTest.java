@@ -21,7 +21,7 @@ class AuthInfoProviderTest {
         //given
         String accessToken = tokenProvider.createAccessToken(EMAIL, NICKNAME);
         //when
-        boolean result = tokenProvider.validateToken(accessToken);
+        boolean result = tokenProvider.validateToken(accessToken, TokenType.ACCESS);
         //then
         assertThat(result).isTrue();
     }
@@ -31,7 +31,7 @@ class AuthInfoProviderTest {
         //given
         String refreshToken = tokenProvider.createRefreshToken(EMAIL, NICKNAME);
         //when
-        boolean result = tokenProvider.validateToken(refreshToken);
+        boolean result = tokenProvider.validateToken(refreshToken, TokenType.REFRESH);
         //then
         assertThat(result).isTrue();
     }
@@ -41,7 +41,7 @@ class AuthInfoProviderTest {
         //given
         String accessToken = tokenProvider.createAccessToken(EMAIL, NICKNAME);
         //when
-        UserInfo userInfo = tokenProvider.getTokenInfo(accessToken);
+        UserInfo userInfo = tokenProvider.getTokenInfo(accessToken, TokenType.ACCESS);
         //then
         assertThat(userInfo.getEmail()).isEqualTo(EMAIL);
         assertThat(userInfo.getNickname()).isEqualTo(NICKNAME);

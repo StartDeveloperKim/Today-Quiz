@@ -56,7 +56,7 @@ public class TokenProvider {
 
     public TokenResponse reissueAccessToken(String refreshToken) {
         String email = refreshTokenDao.getEmail(refreshToken);
-        UserInfo userInfo = getTokenInfo(refreshToken);
+        UserInfo userInfo = getTokenInfo(refreshToken, TokenType.REFRESH);
         if (email != null && email.equals(userInfo.getEmail())) {
             String newRefreshToken = createRefreshToken(userInfo.getEmail(), userInfo.getNickname());
             refreshTokenDao.saveRefreshToken(newRefreshToken, email, Duration.ofDays(1));
@@ -76,9 +76,9 @@ public class TokenProvider {
                 .compact();
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, TokenType tokenType) {
         try {
-            getClaims(token);
+            getClaims(token, tokenType);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.error("잘못된 JWT 서명입니다.");
@@ -93,8 +93,8 @@ public class TokenProvider {
         return false;
     }
 
-    public UserInfo getTokenInfo(String token) {
-        Claims claims = getClaims(token);
+    public UserInfo getTokenInfo(String token, TokenType tokenType) {
+        Claims claims = getClaims(token, tokenType);
         String email = claims.getSubject();
         String nickname = claims.get(NICKNAME, String.class);
 
@@ -105,10 +105,10 @@ public class TokenProvider {
     * accessToken과 refreshToken의 SecretKey를 달리 설정했기 때문에
     * 파라미터로 Token의 타입을 전달받아야 한다. 이 점 수정하자.
     * */
-    private Claims getClaims(String token) {
-
+    private Claims getClaims(String token, TokenType tokenType) {
+        Key secretKey = tokenType.equals(TokenType.ACCESS) ? this.accessTokenSecretKey : this.refreshTokenSecretKey;
         return Jwts.parserBuilder()
-                .setSigningKey(this.accessTokenSecretKey)
+                .setSigningKey(secretKey)
                 .build().parseClaimsJws(token).getBody();
     }
 }

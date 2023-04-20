@@ -34,9 +34,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String accessToken = parseAccessToken(request);
             log.info("JWT Filter running... {}", request.getRequestURI());
 
-            if (accessToken != null && tokenProvider.validateToken(accessToken)) {
+            if (accessToken != null && tokenProvider.validateToken(accessToken, TokenType.ACCESS)) {
                 log.info("AccessToken Info : {}", accessToken);
-                UserInfo userinfo = tokenProvider.getTokenInfo(accessToken);
+                UserInfo userinfo = tokenProvider.getTokenInfo(accessToken, TokenType.ACCESS);
 
                 AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userinfo, null, AuthorityUtils.NO_AUTHORITIES);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
