@@ -3,15 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <title>오늘의 퀴즈</title>
+    <!-- 부트스트랩 CSS 링크 추가 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- 원하는 한국어 폰트의 CSS 링크를 추가하세요 -->
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+    <!-- Font Awesome CDN 추가 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <style>
+        /* 화면 전체를 채우는 flex 컨테이너 */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* 현재 시간을 표시하는 요소 */
+        #current-time {
+            font-family: 'Nanum Gothic', sans-serif; /* 폰트 지정 */
+            font-size: 80px;
+            /* 글자 크기를 48px로 설정 */
+            text-align: center;
+        }
+
+        #text-input {
+            flex: 1;
+            margin-top: 20px;
+            padding: 10px;
+            outline: none;
+            transition: all 0.3s ease-in-out;
+            border-radius: 10px;
+            width: calc(70%);
+            height: calc(100% + 15px);
+            box-shadow: 0px 0px 5px grey;
+            border: none; /* 기본 테두리 제거 */
+            border-radius: 20px; /* 코너를 둥글게 처리 */
+            box-shadow: 0px 0px 5px grey; /* 그림자 추가 */
+        }
+
+        /* 전송 버튼 */
+        #send-button {
+            min-width: 100px;
+            margin-top: 10px;
+            /* 텍스트 입력 창과 전송 버튼 사이의 간격 설정 */
+            margin-left: 10px;
+            /* 전송 버튼의 왼쪽 여백 설정 */
+            padding: 10px 20px; /* 패딩 설정 */
+            background-color: #007bff; /* 배경색 설정 */
+            color: #FFFFFF; /* 글자색 설정 */
+            border: none; /* 테두리 제거 */
+            border-radius: 5px; /* 둥근 테두리 설정 */
+            font-size: 18px; /* 글자 크기 설정 */
+            cursor: pointer; /* 커서를 손가락 모양으로 설정 */
+            transition: background-color 0.3s ease-in-out; /* 배경색 전환 효과 추가 */
+        }
+
+        /* 전송 버튼 호버 효과 */
+        #send-button:hover {
+            background-color: #FFA500; /* 호버 시 배경색 변경 */
+        }
+
+        /* div를 꽉 차게 설정 */
+        .full-width {
+            width: 100%;
+        }
+
+        /* input 태그를 꽉 차게 설정 */
+        .full-width input {
+            width: 100%;
+        }
+
+        /* "오늘의 퀴즈" 제목 스타일 */
+        #quiz-title {
+            font-family: 'Nanum Gothic', sans-serif; /* 폰트 지정 */
+            font-size: 100px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+            color: black;
+            text-shadow: 2px 2px 2px #CCCCCC;
+        }
+
+        /* 로그인 버튼에 적용할 스타일 */
+        .login-button {
+            background-color: #FF0000; /* 배경색 */
+            color: #FFFFFF; /* 글자색 */
+            border: none; /* 테두리 없음 */
+            padding: 10px 20px; /* 패딩 */
+            font-size: 16px; /* 폰트 크기 */
+            font-weight: bold; /* 폰트 굵기 */
+            cursor: pointer; /* 마우스 커서 모양 */
+            border-radius: 5px; /* 버튼 테두리 둥글게 */
+            position: fixed; /* 고정 위치 */
+            top: 10px; /* 상단 여백 */
+            right: 10px; /* 우측 여백 */
+            z-index: 9999; /* 다른 요소 위에 위치 */
+            text-decoration: none; /* 밑줄 없음 */
+        }
+
+        /* 로그인 버튼에 호버(hover) 효과 적용 */
+        .login-button:hover {
+            background-color: #FF4500; /* 호버 시 배경색 변경 */
+            color: black;
+        }
+
+        /* 구글 로고 아이콘 스타일 설정 */
+        .google-logo {
+            margin-right: 5px; /* 구글 로고 아이콘과 텍스트 사이 여백 */
+        }
+
+        .image-container {
+            position: fixed; /* 고정 위치로 설정 */
+            bottom: 0; /* 아래에 위치 */
+            left: 0; /* 왼쪽에 위치 */
+            z-index: 9999; /* 다른 요소 위에 표시 */
+        }
+        /* 이미지 스타일을 설정 */
+        .image-container img {
+            width: 100%; /* 가로 길이 100%로 설정 */
+            max-width: 300px; /* 최대 가로 길이 300px로 제한 (선택사항) */
+        }
+
+    </style>
 </head>
 <body>
-    <h1>홈 페이지 입니다.</h1>
-    <a href="/login">로그인 페이지 ㄱㄱ</a>
-    <div th:if="${authInfo != null}">
-        <h4 th:text="${authInfo.email} + ' : 로그인 결과'">로그인 결과</h4>
-        <p th:text="'AccessToken : ' + ${authInfo.accessToken}">엑세스 토큰 없음!!</p>
-        <p th:text="'RefreshToken : ' + ${authInfo.refreshToken}">리프레쉬 토큰 없음!!</p>
-    </div>
+    <!-- 부트스트랩 클래스 적용 -->
+    <div class="container">
+        <h1 id="quiz-title">오늘의 퀴즈</h1>
+        <a href="/oauth2/authorization/google" class="login-button">
+            <i class="fab fa-google google-logo"></i>
+            로그인
+        </a>
 
+        <div class="image-container">
+            <img src="https://cdn.pixabay.com/photo/2012/04/11/16/17/thinker-28741_960_720.png" alt="이미지 예제"> <!-- 이미지 파일 경로 지정 -->
+        </div>
+
+        <div class="text-center justify-content-center align-items-center">
+            <!-- 현재 시간을 표시하는 요소 -->
+            <h1 id="remainingTime" class="display-4 font-weight-bold"></h1>
+            <div class="d-flex justify-content-center align-items-center mt-3 flex-column">
+                <!-- 텍스트 입력 창 -->
+                <input id="text-input" class="justify-content-center ml-3 form-control" type="text" disabled
+                       onkeydown="handleKeyPress(event)" required>
+                <div id="error-message" class="invalid-feedback font-weight-bold">정답을 입력해주세요!!</div>
+                <!-- 전송 버튼 -->
+                <button id="send-button" class="mr-2" onclick="sendData()" disabled>정답제출</button>
+            </div>
+        </div>
+    </div>
 </body>
+<script>
+    // 시간은 퀴즈 날짜를 파라미터로 넘겨 사용하자.
+    function showCurrentTime() {
+        var targetTime = new Date("2023-04-20T22:28:00"); // 특정 시간 설정
+        var now = new Date(); // 현재 시간 가져오기
+
+        var text_input = document.getElementById('text-input');
+        var send_button = document.getElementById('send-button');
+
+        var timeDifference = targetTime - now; // 남은 시간 계산 (밀리초 단위)
+        if (timeDifference <= 0) {
+            document.getElementById("remainingTime").innerHTML = "정답을 입력해주세요!!";
+            text_input.disabled = false;
+            text_input.placeholder = "정답을 입력하고 엔터를 누르거나 아래의 버튼을 눌러주세요"
+            send_button.disabled = false;
+            return;
+        }
+
+        var hours = Math.floor(timeDifference / (1000 * 60 * 60)); // 시간 계산
+        var minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60)); // 분 계산
+        var seconds = Math.floor((timeDifference % (1000 * 60)) / 1000); // 초 계산
+
+        document.getElementById("remainingTime").innerHTML = "남은 시간: " + hours + "시간 " + minutes + "분 " + seconds + "초";
+        text_input.disabled = true;
+        text_input.placeholder = "아직은 정답 입력시간이 아닙니다."
+        send_button.disabled = true;
+    }
+
+    window.onload = function () {
+        setInterval(showCurrentTime, 1000);
+    }
+
+    function handleKeyPress(event) {
+        if (event.keyCode === 13) {
+            // input 태그의 값이 빈 값인 경우 오류 메시지 표시
+            if (event.target.value.trim() === '') {
+                document.getElementById('error-message').style.display = 'block';
+            } else {
+                document.getElementById('error-message').style.display = 'none';
+                sendData();
+            }
+        }
+    }
+
+    function sendData() {
+        var text_input = document.getElementById('text-input');
+        var inputText = text_input.value;
+
+        text_input.value = ""
+        if(inputText === ""){
+            document.getElementById('error-message').style.display = 'block';
+        }else{
+            // 서버로 데이터 전송하는 로직 작성
+            // 예시로 콘솔에 입력된 데이터 출력
+            document.getElementById('error-message').style.display = 'none';
+            console.log('전송할 데이터:', inputText);
+        }
+    }
+</script>
 </html>
