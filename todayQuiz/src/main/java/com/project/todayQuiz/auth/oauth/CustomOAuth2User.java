@@ -27,4 +27,9 @@ public class CustomOAuth2User extends DefaultOAuth2User {
     public String getNickname() {
         return nickname;
     }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return super.getAttributes();
+    }
 }

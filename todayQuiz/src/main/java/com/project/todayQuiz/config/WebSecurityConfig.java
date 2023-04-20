@@ -39,7 +39,7 @@ public class WebSecurityConfig {
                 .csrf().disable()
                 .httpBasic().disable()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
 
                 .and()
                 .authorizeRequests()

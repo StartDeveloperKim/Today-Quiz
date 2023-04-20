@@ -2,23 +2,18 @@ package com.project.todayQuiz.user.controller;
 
 import com.project.todayQuiz.auth.jwt.TokenProvider;
 import com.project.todayQuiz.auth.jwt.dto.TokenResponse;
+import com.project.todayQuiz.auth.securityToken.SecurityTokenDao;
+import com.project.todayQuiz.auth.securityToken.AuthInfo;
 import com.project.todayQuiz.user.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -26,6 +21,7 @@ import java.util.Date;
 public class UserController {
 
     private final TokenProvider tokenProvider;
+    private final SecurityTokenDao securityTokenDao;
 
     @GetMapping("/login")
     public String login() {
@@ -52,13 +48,17 @@ public class UserController {
     }
 
     @GetMapping("/auth")
-    public String authRedirect(@RequestParam(name = "accessToken") String accessToken,
-                               @RequestParam(name = "refreshToken") String refreshToken,
+    public String authRedirect(@RequestParam(name = "token") String securityToken,
                                RedirectAttributes attributes) {
-        log.info("/auth, accessToken: {}", accessToken);
-        log.info("/auth, refreshToken: {}", refreshToken);
+        AuthInfo authInfo = securityTokenDao.getTokenInfo(securityToken);
+        if (authInfo ==null) {
+            return "redirect:/error";
+        }
+        log.info("/auth, securityToken: {}", securityToken);
+        log.info("/auth, accessToken: {}", authInfo.getAccessToken());
+        log.info("/auth, refreshToken: {}", authInfo.getRefreshToken());
 
-        attributes.addFlashAttribute("tokenResponse", new TokenResponse(accessToken, refreshToken));
+        attributes.addFlashAttribute("authInfo", authInfo);
 
         return "redirect:/";
     }

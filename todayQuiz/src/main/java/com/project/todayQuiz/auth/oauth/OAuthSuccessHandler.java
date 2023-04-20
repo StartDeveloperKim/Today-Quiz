@@ -1,18 +1,16 @@
 package com.project.todayQuiz.auth.oauth;
 
 import com.project.todayQuiz.auth.jwt.TokenProvider;
-import com.project.todayQuiz.auth.jwt.refreshToken.RefreshTokenDao;
-import com.project.todayQuiz.user.util.CookieUtil;
+import com.project.todayQuiz.auth.securityToken.SecurityTokenDao;
+import com.project.todayQuiz.auth.securityToken.SecurityTokenGenerator;
+import com.project.todayQuiz.auth.securityToken.AuthInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -25,10 +23,10 @@ import java.util.Map;
 public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final TokenProvider tokenProvider;
-    private final RefreshTokenDao refreshTokenDao;
+    private final SecurityTokenDao securityTokenDao;
 
     private static final String ERROR_REDIRECT_URL = "http://localhost:8080/error";
-    private static final String REDIRECT_URL = "http://localhost:8080/auth?accessToken=";
+    private static final String REDIRECT_URL = "http://localhost:8080/auth?token=";
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -42,19 +40,15 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             String nickname = customOAuth2User.getNickname();
 
             String accessToken = tokenProvider.createAccessToken(email, nickname);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"accessToken\":\"" + accessToken + "\"}");
-
             String refreshToken = tokenProvider.createRefreshToken(email, nickname);
-            refreshTokenDao.saveRefreshToken(refreshToken, email, Duration.ofDays(1));
 
-            log.info("refreshToken : {}", refreshToken);
+            AuthInfo authInfo = new AuthInfo(accessToken, refreshToken, email);
+            String securityToken = SecurityTokenGenerator.generateSecurityToken();
+            securityTokenDao.saveTokenInfo(securityToken, authInfo, Duration.ofSeconds(60));
 
-            Cookie refreshTokenCookie = CookieUtil.getRefreshTokenCookie(refreshToken);
-            response.addCookie(refreshTokenCookie);
+            log.info("email : {}", email);
 
-            String authRedirectURL = REDIRECT_URL + accessToken + "&refreshToken=" + refreshToken;
-
+            String authRedirectURL = REDIRECT_URL + securityToken;
             response.sendRedirect(authRedirectURL);
         }else {
             response.sendRedirect(ERROR_REDIRECT_URL); // 에러

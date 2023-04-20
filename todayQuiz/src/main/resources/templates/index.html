@@ -1,10 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>오늘의 퀴즈</title>
 </head>
 <body>
-<h1>홈 페이지 입니다.</h1>
+    <h1>홈 페이지 입니다.</h1>
+    <a href="/login">로그인 페이지 ㄱㄱ</a>
+    <div th:if="${authInfo != null}">
+        <h4 th:text="${authInfo.email} + ' : 로그인 결과'">로그인 결과</h4>
+        <p th:text="'AccessToken : ' + ${authInfo.accessToken}">엑세스 토큰 없음!!</p>
+        <p th:text="'RefreshToken : ' + ${authInfo.refreshToken}">리프레쉬 토큰 없음!!</p>
+    </div>
+
 </body>
 </html>

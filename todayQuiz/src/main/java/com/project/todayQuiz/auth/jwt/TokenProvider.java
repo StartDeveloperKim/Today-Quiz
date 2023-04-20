@@ -23,29 +23,35 @@ import java.util.Date;
 @PropertySource("classpath:application-jwt.properties")
 public class TokenProvider {
 
-    private final Key secretKey;
+    private final Key accessTokenSecretKey;
+    private final Key refreshTokenSecretKey;
     private final RefreshTokenDao refreshTokenDao;
 
     private static final String NICKNAME = "nickname";
     private static final String ISSUER = "Today-Quiz";
 
     @Autowired
-    public TokenProvider(@Value("${jwt.secret}") String key, RefreshTokenDao refreshTokenDao) {
-        byte[] bytes = key.getBytes();
-        this.secretKey = new SecretKeySpec(bytes, "HmacSHA256");
+    public TokenProvider(@Value("${jwt.access.secret}") String accessKey,
+                         @Value("${jwt.refresh.secret}") String refreshKey,
+                         RefreshTokenDao refreshTokenDao) {
+        byte[] accessKeyBytes = accessKey.getBytes();
+        byte[] refreshKeyBytes = refreshKey.getBytes();
+        this.accessTokenSecretKey = new SecretKeySpec(accessKeyBytes, "HmacSHA256");
+        this.refreshTokenSecretKey = new SecretKeySpec(refreshKeyBytes, "HmacSHA256");
+
         this.refreshTokenDao = refreshTokenDao;
     }
 
     public String createAccessToken(String email, String nickname) {
         long accessTokenExpireTime = 1500;
         Date expiryDate = Date.from(Instant.now().plusSeconds(accessTokenExpireTime));
-        return createToken(email, nickname, expiryDate);
+        return createToken(email, nickname, expiryDate, accessTokenSecretKey);
     }
 
     public String createRefreshToken(String email, String nickname) {
         // 현재는 하루지만 나중에 한달로 고치자
         Date expiryDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
-        return createToken(email, nickname, expiryDate);
+        return createToken(email, nickname, expiryDate, refreshTokenSecretKey);
     }
 
     public TokenResponse reissueAccessToken(String refreshToken) {
@@ -59,7 +65,7 @@ public class TokenProvider {
         return null;
     }
 
-    private String createToken(String email, String nickname, Date expiryDate) {
+    private String createToken(String email, String nickname, Date expiryDate, Key secretKey) {
         return Jwts.builder()
                 .signWith(secretKey)
                 .setSubject(email)
@@ -95,10 +101,14 @@ public class TokenProvider {
         return new UserInfo(email, nickname);
     }
 
+    /*
+    * accessToken과 refreshToken의 SecretKey를 달리 설정했기 때문에
+    * 파라미터로 Token의 타입을 전달받아야 한다. 이 점 수정하자.
+    * */
     private Claims getClaims(String token) {
 
         return Jwts.parserBuilder()
-                .setSigningKey(this.secretKey)
+                .setSigningKey(this.accessTokenSecretKey)
                 .build().parseClaimsJws(token).getBody();
     }
 }
