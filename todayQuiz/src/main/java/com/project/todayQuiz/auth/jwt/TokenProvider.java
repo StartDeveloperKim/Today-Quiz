@@ -101,10 +101,6 @@ public class TokenProvider {
         return new UserInfo(email, nickname);
     }
 
-    /*
-    * accessToken과 refreshToken의 SecretKey를 달리 설정했기 때문에
-    * 파라미터로 Token의 타입을 전달받아야 한다. 이 점 수정하자.
-    * */
     private Claims getClaims(String token, TokenType tokenType) {
         Key secretKey = tokenType.equals(TokenType.ACCESS) ? this.accessTokenSecretKey : this.refreshTokenSecretKey;
         return Jwts.parserBuilder()

@@ -2,8 +2,13 @@ package com.project.todayQuiz.user.controller;
 
 import com.project.todayQuiz.auth.jwt.TokenProvider;
 import com.project.todayQuiz.auth.jwt.dto.TokenResponse;
+import com.project.todayQuiz.auth.jwt.refreshToken.RefreshTokenDao;
 import com.project.todayQuiz.auth.securityToken.SecurityTokenDao;
 import com.project.todayQuiz.auth.securityToken.AuthInfo;
+import com.project.todayQuiz.user.dto.NicknameCheckRequest;
+import com.project.todayQuiz.user.dto.NicknameCheckResponse;
+import com.project.todayQuiz.user.service.UserService;
+import com.project.todayQuiz.user.util.CookieType;
 import com.project.todayQuiz.user.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
@@ -22,29 +28,47 @@ public class UserController {
 
     private final TokenProvider tokenProvider;
     private final SecurityTokenDao securityTokenDao;
+    private final RefreshTokenDao refreshTokenDao;
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
+    private final UserService userService;
+
+    @GetMapping("/user")
+    public String myPage() {
+        return "myPage";
     }
 
-    @PostMapping("/logout")
-    public String logout() {
+    @GetMapping("/api/nickname")
+    @ResponseBody
+    public ResponseEntity<NicknameCheckResponse> checkNickname(@RequestBody NicknameCheckRequest checkRequest) {
+        NicknameCheckResponse nicknameCheckResponse = new NicknameCheckResponse(userService.checkDuplicatedNickname(checkRequest.getNickname()));
+        return ResponseEntity.ok(nicknameCheckResponse);
+    }
+
+    @PostMapping("/api/logout")
+//    @ResponseBody
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        log.info("/logout");
+//        TokenResponse tokenResponse = CookieUtil.parseToken(request);
+//        Cookie accessTokenCookie = CookieUtil.getAccessTokenCookie(tokenResponse.getAccessToken(), CookieType.EXPIRE);
+//        Cookie refreshTokenCookie = CookieUtil.getRefreshTokenCookie(tokenResponse.getRefreshToken(), CookieType.EXPIRE);
+//
+//        response.addCookie(accessTokenCookie);
+//        response.addCookie(refreshTokenCookie);
+//        return ResponseEntity.ok(Boolean.TRUE);
         return "redirect:/";
     }
 
     @PostMapping("/api/reissue")
     @ResponseBody
-    public ResponseEntity<TokenResponse> reissueAccessToken(@CookieValue(value = "refreshToken", required = false) String refreshToken,
+    public ResponseEntity<Boolean> reissueAccessToken(@CookieValue(value = "refreshToken", required = false) String refreshToken,
                                                             HttpServletResponse response) {
         if (refreshToken != null) {
             TokenResponse tokenResponse = tokenProvider.reissueAccessToken(refreshToken);
-            Cookie refreshTokenCookie = CookieUtil.getRefreshTokenCookie(tokenResponse.getRefreshToken());
+            CookieUtil.addTokenCookie(response, tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
 
-            response.addCookie(refreshTokenCookie);
-            return ResponseEntity.ok(tokenResponse);
+            return ResponseEntity.ok(Boolean.TRUE);
         }
-        return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.badRequest().body(Boolean.FALSE);
     }
 
     @GetMapping("/auth")

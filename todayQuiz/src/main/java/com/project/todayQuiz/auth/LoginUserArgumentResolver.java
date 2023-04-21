@@ -23,8 +23,8 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        Authentication authentication = securityContext.getAuthentication();
+        Object principal = securityContext.getAuthentication().getPrincipal();
 
-        return authentication.getPrincipal();
+        return principal.getClass().equals(UserInfo.class) ? principal : null;
     }
 }

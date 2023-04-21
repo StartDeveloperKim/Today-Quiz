@@ -1,15 +1,20 @@
 package com.project.todayQuiz.auth.jwt.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import com.nimbusds.oauth2.sdk.token.Tokens;
+import lombok.*;
 
-@RequiredArgsConstructor
+@NoArgsConstructor
 @ToString
+@Setter
 @Getter
 public class TokenResponse {
 
-    private final String accessToken;
-    private final String refreshToken;
+    private String accessToken;
+    private String refreshToken;
+
+    public TokenResponse(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+    }
 
 }

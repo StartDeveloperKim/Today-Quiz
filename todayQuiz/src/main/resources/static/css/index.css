@@ -1,0 +1,134 @@
+/* 화면 전체를 채우는 flex 컨테이너 */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* 현재 시간을 표시하는 요소 */
+#current-time {
+    font-family: 'Nanum Gothic', sans-serif; /* 폰트 지정 */
+    font-size: 80px;
+    /* 글자 크기를 48px로 설정 */
+    text-align: center;
+}
+
+#text-input {
+    flex: 1;
+    margin-top: 20px;
+    padding: 10px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+    border-radius: 10px;
+    width: calc(70%);
+    height: calc(100% + 15px);
+    box-shadow: 0px 0px 5px grey;
+    border: none; /* 기본 테두리 제거 */
+    border-radius: 20px; /* 코너를 둥글게 처리 */
+    box-shadow: 0px 0px 5px grey; /* 그림자 추가 */
+}
+
+/* 전송 버튼 */
+#send-button {
+    min-width: 100px;
+    margin-top: 10px;
+    /* 텍스트 입력 창과 전송 버튼 사이의 간격 설정 */
+    margin-left: 10px;
+    /* 전송 버튼의 왼쪽 여백 설정 */
+    padding: 10px 20px; /* 패딩 설정 */
+    background-color: #007bff; /* 배경색 설정 */
+    color: #FFFFFF; /* 글자색 설정 */
+    border: none; /* 테두리 제거 */
+    border-radius: 5px; /* 둥근 테두리 설정 */
+    font-size: 18px; /* 글자 크기 설정 */
+    cursor: pointer; /* 커서를 손가락 모양으로 설정 */
+    transition: background-color 0.3s ease-in-out; /* 배경색 전환 효과 추가 */
+}
+
+/* 전송 버튼 호버 효과 */
+#send-button:hover {
+    background-color: #FFA500; /* 호버 시 배경색 변경 */
+}
+
+/* div를 꽉 차게 설정 */
+.full-width {
+    width: 100%;
+}
+
+/* input 태그를 꽉 차게 설정 */
+.full-width input {
+    width: 100%;
+}
+
+/* "오늘의 퀴즈" 제목 스타일 */
+#quiz-title {
+    font-family: 'Nanum Gothic', sans-serif; /* 폰트 지정 */
+    font-size: 100px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+    color: black;
+    text-shadow: 2px 2px 2px #CCCCCC;
+}
+
+/* 로그인 버튼에 적용할 스타일 */
+.login-button {
+    background-color: #FF0000; /* 배경색 */
+    color: #FFFFFF; /* 글자색 */
+    border: none; /* 테두리 없음 */
+    padding: 10px 20px; /* 패딩 */
+    font-size: 16px; /* 폰트 크기 */
+    font-weight: bold; /* 폰트 굵기 */
+    cursor: pointer; /* 마우스 커서 모양 */
+    border-radius: 5px; /* 버튼 테두리 둥글게 */
+    position: fixed; /* 고정 위치 */
+    top: 10px; /* 상단 여백 */
+    right: 10px; /* 우측 여백 */
+    z-index: 9999; /* 다른 요소 위에 위치 */
+    text-decoration: none; /* 밑줄 없음 */
+}
+
+.logout-button {
+    background-color: white;
+    color: black; /* 글자색 */
+    border: none; /* 테두리 없음 */
+    padding: 10px 20px; /* 패딩 */
+    font-size: 16px; /* 폰트 크기 */
+    font-weight: bold; /* 폰트 굵기 */
+    cursor: pointer; /* 마우스 커서 모양 */
+    border-radius: 5px; /* 버튼 테두리 둥글게 */
+    position: fixed; /* 고정 위치 */
+    top: 10px; /* 상단 여백 */
+    right: 10px; /* 우측 여백 */
+    z-index: 9999; /* 다른 요소 위에 위치 */
+    text-decoration: none; /* 밑줄 없음 */
+}
+
+.logout-button:hover {
+    background-color: gray;
+}
+
+/* 로그인 버튼에 호버(hover) 효과 적용 */
+.login-button:hover {
+    background-color: #FF4500; /* 호버 시 배경색 변경 */
+    color: black;
+}
+
+/* 구글 로고 아이콘 스타일 설정 */
+.google-logo {
+    margin-right: 5px; /* 구글 로고 아이콘과 텍스트 사이 여백 */
+}
+
+.image-container {
+    position: fixed; /* 고정 위치로 설정 */
+    bottom: 0; /* 아래에 위치 */
+    left: 0; /* 왼쪽에 위치 */
+    z-index: 9999; /* 다른 요소 위에 표시 */
+}
+/* 이미지 스타일을 설정 */
+.image-container img {
+    width: 100%; /* 가로 길이 100%로 설정 */
+    max-width: 300px; /* 최대 가로 길이 300px로 제한 (선택사항) */
+}

@@ -42,7 +42,7 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             String accessToken = tokenProvider.createAccessToken(email, nickname);
             String refreshToken = tokenProvider.createRefreshToken(email, nickname);
 
-            AuthInfo authInfo = new AuthInfo(accessToken, refreshToken, email);
+            AuthInfo authInfo = new AuthInfo(accessToken, refreshToken, email, nickname);
             String securityToken = SecurityTokenGenerator.generateSecurityToken();
             securityTokenDao.saveTokenInfo(securityToken, authInfo, Duration.ofSeconds(60));
 

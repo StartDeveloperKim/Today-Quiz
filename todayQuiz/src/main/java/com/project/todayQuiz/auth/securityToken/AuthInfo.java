@@ -14,13 +14,15 @@ public class AuthInfo implements Serializable{
     private String accessToken;
     private String refreshToken;
     private String email;
+    private String nickname;
 
     public AuthInfo() {
     }
 
-    public AuthInfo(String accessToken, String refreshToken, String email) {
+    public AuthInfo(String accessToken, String refreshToken, String email, String nickname) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.email = email;
+        this.nickname = nickname;
     }
 }
