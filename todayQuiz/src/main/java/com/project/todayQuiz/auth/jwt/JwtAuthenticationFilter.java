@@ -1,6 +1,10 @@
 package com.project.todayQuiz.auth.jwt;
 
+import com.project.todayQuiz.auth.jwt.dto.TokenResponse;
 import com.project.todayQuiz.auth.jwt.dto.UserInfo;
+import com.project.todayQuiz.auth.jwt.refreshToken.RefreshTokenDao;
+import com.project.todayQuiz.user.util.CookieType;
+import com.project.todayQuiz.user.util.CookieUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,53 +31,48 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
-    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenDao refreshTokenDao;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        TokenResponse tokenResponse = CookieUtil.parseToken(request);
         try {
-            String accessToken = parseAccessToken(request);
             log.info("JWT Filter running... {}", request.getRequestURI());
+
+            String accessToken = tokenResponse.getAccessToken();
 
             if (accessToken != null && tokenProvider.validateToken(accessToken, TokenType.ACCESS)) {
                 log.info("AccessToken Info : {}", accessToken);
-                UserInfo userinfo = tokenProvider.getTokenInfo(accessToken, TokenType.ACCESS);
-
-                AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userinfo, null, AuthorityUtils.NO_AUTHORITIES);
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-                securityContext.setAuthentication(authentication);
-                SecurityContextHolder.setContext(securityContext);
+                saveUserInfo(request, accessToken);
             }
         } catch (ExpiredJwtException e) {
             log.error("Expired AccessToken");
-            // 엑세시토큰이 만료된 경우 401에러를 반환한다.
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            return;
+            String refreshToken = tokenResponse.getRefreshToken();
+            if (refreshToken!= null && tokenProvider.validateToken(refreshToken, TokenType.REFRESH)) {
+                TokenResponse newTokenResponse = tokenProvider.reissueAccessToken(refreshToken);
+                if (newTokenResponse == null) {
+                    response.sendRedirect("/api/logout");
+                }else {
+                    CookieUtil.addTokenCookie(response, newTokenResponse.getAccessToken(), newTokenResponse.getRefreshToken());
+                    saveUserInfo(request, newTokenResponse.getAccessToken());
+                }
+            }else {
+                response.sendRedirect("/api/logout");
+            }
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private String parseAccessToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
+    private void saveUserInfo(HttpServletRequest request, String accessToken) {
+        UserInfo userinfo = tokenProvider.getTokenInfo(accessToken, TokenType.ACCESS);
 
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("accessToken")) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
+        AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userinfo, null, AuthorityUtils.NO_AUTHORITIES);
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
     }
-//    private String parseAccessToken(HttpServletRequest request) {
-//        String bearerToken = request.getHeader("Authorization");
-//
-//        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-//            return bearerToken.substring(7);
-//        }
-//        return null;
-//    }
+
 }

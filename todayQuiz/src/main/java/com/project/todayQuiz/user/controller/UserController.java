@@ -57,19 +57,18 @@ public class UserController {
 //        return ResponseEntity.ok(Boolean.TRUE);
         return "redirect:/";
     }
-
-    @PostMapping("/api/reissue")
-    @ResponseBody
-    public ResponseEntity<Boolean> reissueAccessToken(@CookieValue(value = "refreshToken", required = false) String refreshToken,
-                                                            HttpServletResponse response) {
-        if (refreshToken != null) {
-            TokenResponse tokenResponse = tokenProvider.reissueAccessToken(refreshToken);
-            CookieUtil.addTokenCookie(response, tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
-
-            return ResponseEntity.ok(Boolean.TRUE);
-        }
-        return ResponseEntity.badRequest().body(Boolean.FALSE);
-    }
+//
+//    @GetMapping("/api/reissue")
+//    public String reissueAccessToken(@CookieValue(value = "refreshToken") String refreshToken,
+//                                                            HttpServletResponse response) {
+//        log.info("/api/reissue");
+//        if (refreshToken != null) {
+//            log.info("refreshToken : {}", refreshToken);
+//            TokenResponse tokenResponse = tokenProvider.reissueAccessToken(refreshToken);
+//            CookieUtil.addTokenCookie(response, tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
+//        }
+//        return "redirect:/";
+//    }
 
     @GetMapping("/auth")
     public String authRedirect(@RequestParam(name = "token") String securityToken,

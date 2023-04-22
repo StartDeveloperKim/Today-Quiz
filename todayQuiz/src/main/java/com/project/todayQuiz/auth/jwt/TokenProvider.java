@@ -43,7 +43,7 @@ public class TokenProvider {
     }
 
     public String createAccessToken(String email, String nickname) {
-        long accessTokenExpireTime = 1500;
+        long accessTokenExpireTime = 30;
         Date expiryDate = Date.from(Instant.now().plusSeconds(accessTokenExpireTime));
         return createToken(email, nickname, expiryDate, accessTokenSecretKey);
     }
@@ -58,9 +58,7 @@ public class TokenProvider {
         String email = refreshTokenDao.getEmail(refreshToken);
         UserInfo userInfo = getTokenInfo(refreshToken, TokenType.REFRESH);
         if (email != null && email.equals(userInfo.getEmail())) {
-            String newRefreshToken = createRefreshToken(userInfo.getEmail(), userInfo.getNickname());
-            refreshTokenDao.saveRefreshToken(newRefreshToken, email, Duration.ofDays(1));
-            return new TokenResponse(createAccessToken(userInfo.getEmail(), userInfo.getNickname()), newRefreshToken);
+            return new TokenResponse(createAccessToken(userInfo.getEmail(), userInfo.getNickname()), refreshToken);
         }
         return null;
     }

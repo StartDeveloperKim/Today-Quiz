@@ -4,6 +4,7 @@ import com.project.todayQuiz.auth.CustomLogoutSuccessHandler;
 import com.project.todayQuiz.auth.jwt.JwtAuthenticationFilter;
 import com.project.todayQuiz.auth.jwt.RefreshTokenService;
 import com.project.todayQuiz.auth.jwt.TokenProvider;
+import com.project.todayQuiz.auth.jwt.refreshToken.RefreshTokenDao;
 import com.project.todayQuiz.auth.oauth.OAuthSuccessHandler;
 import com.project.todayQuiz.auth.oauth.OAuthUserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class WebSecurityConfig {
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
     private final TokenProvider tokenProvider;
-    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenDao refreshTokenDao;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -78,13 +79,15 @@ public class WebSecurityConfig {
                 .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
 
                 .and()
-                .addFilterAfter(new JwtAuthenticationFilter(tokenProvider, refreshTokenService), BasicAuthenticationFilter.class);
+                .addFilterAfter(new JwtAuthenticationFilter(tokenProvider, refreshTokenDao), BasicAuthenticationFilter.class);
 
         return http.build();
     }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+        return (web) -> web.ignoring()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                .regexMatchers("/api/reissue");
     }
 }

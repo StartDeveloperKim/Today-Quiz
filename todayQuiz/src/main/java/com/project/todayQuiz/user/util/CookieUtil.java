@@ -25,7 +25,7 @@ public class CookieUtil {
         int maxAge = cookieType.equals(CookieType.NEW) ? 60 * 60 * 24 : 0;
 
         cookie.setHttpOnly(true);
-        cookie.setPath(url);
+//        cookie.setPath(url);
         cookie.setMaxAge(maxAge);
 
         return cookie;
