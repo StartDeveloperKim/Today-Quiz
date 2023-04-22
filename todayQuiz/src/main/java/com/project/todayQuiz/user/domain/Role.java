@@ -2,6 +2,7 @@ package com.project.todayQuiz.user.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @RequiredArgsConstructor
 @Getter
@@ -10,4 +11,12 @@ public enum Role {
 
     private final String key;
     private final String title;
+
+    public static Role getRole(String key) {
+        if (key.equals("ROLE_GUEST")) {
+            return GUEST;
+        } else {
+            return ADMIN;
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.project.todayQuiz.auth.securityToken;
 
+import com.project.todayQuiz.user.domain.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +21,7 @@ class SecurityTokenDaoTest {
     @Test
     void 보안토큰을_key로_사용하여_TokenInfo를_저장한다() {
         //given
-        AuthInfo authInfo = new AuthInfo(ACCESS_TOKEN, REFRESH_TOKEN, "email", "nickname");
+        AuthInfo authInfo = new AuthInfo(ACCESS_TOKEN, REFRESH_TOKEN, "email", "nickname", Role.GUEST);
         String securityToken = SecurityTokenGenerator.generateSecurityToken();
         System.out.println("securityToken = " + securityToken);
 

@@ -1,6 +1,7 @@
 package com.project.todayQuiz.auth.jwt;
 
 import com.project.todayQuiz.auth.jwt.dto.UserInfo;
+import com.project.todayQuiz.user.domain.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +20,7 @@ class AuthInfoProviderTest {
     @Test
     void AccessToekn을_발급하고_검증하면_통과된다() {
         //given
-        String accessToken = tokenProvider.createAccessToken(EMAIL, NICKNAME);
+        String accessToken = tokenProvider.createAccessToken(EMAIL, NICKNAME, Role.GUEST);
         //when
         boolean result = tokenProvider.validateToken(accessToken, TokenType.ACCESS);
         //then
@@ -29,7 +30,7 @@ class AuthInfoProviderTest {
     @Test
     void RefreshToken을_발급하고_검증하면_통과된다() {
         //given
-        String refreshToken = tokenProvider.createRefreshToken(EMAIL, NICKNAME);
+        String refreshToken = tokenProvider.createRefreshToken(EMAIL, NICKNAME, Role.GUEST);
         //when
         boolean result = tokenProvider.validateToken(refreshToken, TokenType.REFRESH);
         //then
@@ -39,7 +40,7 @@ class AuthInfoProviderTest {
     @Test
     void Token의_Claim을_정상적으로_파싱한다() {
         //given
-        String accessToken = tokenProvider.createAccessToken(EMAIL, NICKNAME);
+        String accessToken = tokenProvider.createAccessToken(EMAIL, NICKNAME, Role.GUEST);
         //when
         UserInfo userInfo = tokenProvider.getTokenInfo(accessToken, TokenType.ACCESS);
         //then

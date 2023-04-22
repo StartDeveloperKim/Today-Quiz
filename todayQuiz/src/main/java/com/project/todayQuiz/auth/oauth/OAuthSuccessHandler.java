@@ -1,12 +1,14 @@
 package com.project.todayQuiz.auth.oauth;
 
 import com.project.todayQuiz.auth.jwt.TokenProvider;
+import com.project.todayQuiz.auth.securityToken.AuthInfo;
 import com.project.todayQuiz.auth.securityToken.SecurityTokenDao;
 import com.project.todayQuiz.auth.securityToken.SecurityTokenGenerator;
-import com.project.todayQuiz.auth.securityToken.AuthInfo;
+import com.project.todayQuiz.user.domain.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,14 +43,18 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             String email = (String) attributes.get("email");
             String nickname = customOAuth2User.getNickname();
 
-            String accessToken = tokenProvider.createAccessToken(email, nickname);
-            String refreshToken = tokenProvider.createRefreshToken(email, nickname);
+            Optional<Object> roleInfo = Arrays.stream(customOAuth2User.getAuthorities().toArray()).findFirst();
+            SimpleGrantedAuthority simpleGrantedAuthority = (SimpleGrantedAuthority) roleInfo.get();
+            String role = simpleGrantedAuthority.getAuthority().toString();
 
-            AuthInfo authInfo = new AuthInfo(accessToken, refreshToken, email, nickname);
+            String accessToken = tokenProvider.createAccessToken(email, nickname, Role.getRole(role));
+            String refreshToken = tokenProvider.createRefreshToken(email, nickname, Role.getRole(role));
+
+            AuthInfo authInfo = new AuthInfo(accessToken, refreshToken, email, nickname, Role.getRole(role));
             String securityToken = SecurityTokenGenerator.generateSecurityToken();
             securityTokenDao.saveTokenInfo(securityToken, authInfo, Duration.ofSeconds(60));
 
-            log.info("email : {}", email);
+            log.info("AuthInfo : {}", authInfo.toString());
 
             String authRedirectURL = REDIRECT_URL + securityToken;
             response.sendRedirect(authRedirectURL);

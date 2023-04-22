@@ -4,8 +4,6 @@ import com.project.todayQuiz.auth.LoginUser;
 import com.project.todayQuiz.auth.jwt.dto.UserInfo;
 import com.project.todayQuiz.auth.jwt.refreshToken.RefreshTokenDao;
 import com.project.todayQuiz.auth.securityToken.AuthInfo;
-import com.project.todayQuiz.user.domain.User;
-import com.project.todayQuiz.user.util.CookieType;
 import com.project.todayQuiz.user.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.time.Duration;
 
@@ -30,7 +27,7 @@ public class IndexController {
         if (authInfo != null) {
             refreshTokenDao.saveRefreshToken(authInfo.getRefreshToken(), authInfo.getEmail(), Duration.ofDays(1));
             CookieUtil.addTokenCookie(response, authInfo.getAccessToken(), authInfo.getRefreshToken());
-            model.addAttribute("userInfo", new UserInfo(authInfo.getEmail(), authInfo.getNickname()));
+            model.addAttribute("userInfo", new UserInfo(authInfo.getEmail(), authInfo.getNickname(), authInfo.getRole()));
         }else{
             log.info("securityToken not exist");
         }

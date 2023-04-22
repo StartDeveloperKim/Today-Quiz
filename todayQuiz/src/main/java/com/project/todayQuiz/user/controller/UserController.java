@@ -44,32 +44,6 @@ public class UserController {
         return ResponseEntity.ok(nicknameCheckResponse);
     }
 
-    @PostMapping("/api/logout")
-//    @ResponseBody
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
-        log.info("/logout");
-//        TokenResponse tokenResponse = CookieUtil.parseToken(request);
-//        Cookie accessTokenCookie = CookieUtil.getAccessTokenCookie(tokenResponse.getAccessToken(), CookieType.EXPIRE);
-//        Cookie refreshTokenCookie = CookieUtil.getRefreshTokenCookie(tokenResponse.getRefreshToken(), CookieType.EXPIRE);
-//
-//        response.addCookie(accessTokenCookie);
-//        response.addCookie(refreshTokenCookie);
-//        return ResponseEntity.ok(Boolean.TRUE);
-        return "redirect:/";
-    }
-//
-//    @GetMapping("/api/reissue")
-//    public String reissueAccessToken(@CookieValue(value = "refreshToken") String refreshToken,
-//                                                            HttpServletResponse response) {
-//        log.info("/api/reissue");
-//        if (refreshToken != null) {
-//            log.info("refreshToken : {}", refreshToken);
-//            TokenResponse tokenResponse = tokenProvider.reissueAccessToken(refreshToken);
-//            CookieUtil.addTokenCookie(response, tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
-//        }
-//        return "redirect:/";
-//    }
-
     @GetMapping("/auth")
     public String authRedirect(@RequestParam(name = "token") String securityToken,
                                RedirectAttributes attributes) {
@@ -77,10 +51,6 @@ public class UserController {
         if (authInfo ==null) {
             return "redirect:/error";
         }
-        log.info("/auth, securityToken: {}", securityToken);
-        log.info("/auth, accessToken: {}", authInfo.getAccessToken());
-        log.info("/auth, refreshToken: {}", authInfo.getRefreshToken());
-
         attributes.addFlashAttribute("authInfo", authInfo);
 
         return "redirect:/";
