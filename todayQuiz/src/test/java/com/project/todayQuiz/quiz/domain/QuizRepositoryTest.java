@@ -1,0 +1,60 @@
+package com.project.todayQuiz.quiz.domain;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@DataJpaTest
+class QuizRepositoryTest {
+
+    @Autowired
+    private QuizRepository quizRepository;
+
+    Quiz savedQuiz;
+
+    @BeforeEach
+    void setUp() {
+        Quiz quiz = Quiz.builder()
+                .question("question")
+                .answer("answer")
+                .createDate(LocalDateTime.now())
+                .postDate(LocalDateTime.of(2023, 4, 23, 1, 44))
+                .build();
+        savedQuiz = quizRepository.save(quiz);
+    }
+
+    @AfterEach
+    void removeDB() {
+        quizRepository.deleteAll();
+    }
+
+    @Test
+    void postDate를_통해_퀴즈를_찾아온다() {
+        //when
+        LocalDate postDate = LocalDate.of(2023, 4, 23);
+        Quiz findQuiz = quizRepository
+                .findQuizByPostDate(postDate.getYear(), postDate.getMonthValue(), postDate.getDayOfMonth());
+        //then
+        assertThat(savedQuiz.getId()).isEqualTo(findQuiz.getId());
+    }
+
+    @Test
+    void 동일한_PostDate의_퀴즈가있다면_True를_반환한다() {
+        //when
+        LocalDate postDate = LocalDate.of(2023, 4, 23);
+        Boolean result = quizRepository
+                .existsQuizByPostDate(postDate.getYear(), postDate.getMonthValue(), postDate.getDayOfMonth());
+        //then
+        assertThat(result).isTrue();
+    }
+
+}

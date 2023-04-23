@@ -1,10 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>관리자 페이지</title>
+
+    <!-- 부트스트랩 CSS 링크 추가 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- 원하는 한국어 폰트의 CSS 링크를 추가하세요 -->
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+    <!-- font-awesome CSS 파일 로드 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-<h1>관리자 페이지</h1>
+    <h1>관리자 페이지</h1>
+    <label for="datetime-local"></label>
+    <input type="datetime-local" id="datetime-local" name="datetime-local">
+
+    <label for="question"></label>
+    <input type="text" id="question" name="question" />
+
+    <label for="answer"></label>
+    <input type="text" id="answer" name="answer"/>
+
+    <button onclick="postQuiz()">전송</button>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-3">퀴즈 목록</h1>
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>질문</th>
+                <th>정답</th>
+                <th>퀴즈날짜</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 표 데이터를 동적으로 추가할 부분 -->
+            <tr th:each="quiz : ${quizzes}">
+                <td th:text="${quiz.id}">1</td>
+                <td th:text="${quiz.question}">홍길동</td>
+                <td th:text="${quiz.answer}">25</td>
+                <td th:text="${quiz.postDate}">2022-01-01</td>
+            </tr>
+            </tbody>
+        </table>
+        <!-- 페이징 정보를 표시하는 부분 -->
+        <nav aria-label="페이징">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${paging.previousPage? '':'disabled'}">
+                    <a class="page-link" th:href="'/admin/'+${paging.currentPage}-1" tabindex="-1" aria-disabled="true">이전</a>
+                </li>
+                <li th:each="num : ${#numbers.sequence(paging.startPage, paging.endPage)}" class="page-item" th:classappend="${num==paging.currentPage ? 'active' : '' }">
+                    <a class="page-link" th:href="'/admin/'+ num + 1">1</a>
+                </li>
+                <li class="page-item" th:classappend="${paging.nextPage? '':'disabled'}">
+                    <a class="page-link" th:href="'/admin/'+${paging.currentPage}+1">다음</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </body>
+<script src="/js/admin.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </html>

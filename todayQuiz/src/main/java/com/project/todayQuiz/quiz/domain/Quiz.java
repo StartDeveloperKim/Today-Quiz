@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -27,10 +28,11 @@ public class Quiz {
 
     private LocalDateTime createDate;
 
-    private LocalDate postDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime postDate;
 
     @Builder
-    public Quiz(String question, String answer, LocalDateTime createDate, LocalDate postDate) {
+    public Quiz(String question, String answer, LocalDateTime createDate, LocalDateTime postDate) {
         this.question = question;
         this.answer = answer;
         this.createDate = createDate;
@@ -40,5 +42,9 @@ public class Quiz {
     public void updateQuiz(String question, String answer) {
         this.question = question;
         this.answer = answer;
+    }
+
+    public void updateDate(LocalDateTime newDate) {
+        this.postDate = newDate;
     }
 }

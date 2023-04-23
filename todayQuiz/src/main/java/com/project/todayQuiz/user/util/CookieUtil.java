@@ -33,7 +33,7 @@ public class CookieUtil {
 
     public static Cookie getAccessTokenCookie(String accessToken, CookieType cookieType) {
         Cookie cookie = new Cookie(ACCESS_TOKEN, accessToken);
-        int maxAge = cookieType.equals(CookieType.NEW) ? 30 * 24 : 0;
+        int maxAge = cookieType.equals(CookieType.NEW) ? 30 : 0; // 테스트떄문에 30초로 바꿔넘
 
         cookie.setHttpOnly(true);
         cookie.setMaxAge(maxAge);
@@ -45,15 +45,18 @@ public class CookieUtil {
         Cookie[] cookies = request.getCookies();
 
         TokenResponse tokenResponse = new TokenResponse();
-        for (Cookie cookie : cookies) {
-            String name = cookie.getName();
-            if(name.equals(ACCESS_TOKEN)){
-                tokenResponse.setAccessToken(cookie.getValue());
-            }
-            if (name.equals(REFRESH_TOKEN)) {
-                tokenResponse.setRefreshToken(cookie.getValue());
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                String name = cookie.getName();
+                if(name.equals(ACCESS_TOKEN)){
+                    tokenResponse.setAccessToken(cookie.getValue());
+                }
+                if (name.equals(REFRESH_TOKEN)) {
+                    tokenResponse.setRefreshToken(cookie.getValue());
+                }
             }
         }
+
         return tokenResponse;
     }
 }

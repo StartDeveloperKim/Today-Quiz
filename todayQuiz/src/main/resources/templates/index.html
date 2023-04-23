@@ -20,7 +20,12 @@
             <i class="fab fa-google google-logo"></i>
             로그인
         </a>
-        <button onclick="logout()" class="logout-button" th:if="${userInfo!=null}">
+
+        <button onclick="window.location.href='/admin/1'" id="admin-page-button" th:if="${userInfo != null && userInfo.role.key=='ROLE_ADMIN'}">
+            관리자페이지
+        </button>
+
+        <button onclick="logout()" class="logout-button" th:if="${userInfo != null}">
             <i class="fas fa-sign-out-alt fa-lg"></i> 로그아웃
         </button>
 

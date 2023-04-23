@@ -44,9 +44,10 @@ public class WebSecurityConfig {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/css/**", "/js/**").permitAll()
-                .antMatchers("/**").permitAll()
-                //, "/login", "/logout","/reissue", "/oauth2/**", "/auth"
+                .antMatchers("/css/**", "/js/**", "/api/logout", "/oauth2/**", "/auth").permitAll()
+                .antMatchers("/answer", "/user").hasAnyRole("ROLE_GUEST", "ROLE_ADMIN")
+                .antMatchers("/quiz").hasAnyRole("ROLE_ADMIN")
+                //, "/login", "/logout", "/oauth2/**", "/auth"
 //                .anyRequest().authenticated()
 
 //                .and()

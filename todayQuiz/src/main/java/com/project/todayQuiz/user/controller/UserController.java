@@ -1,7 +1,9 @@
 package com.project.todayQuiz.user.controller;
 
+import com.project.todayQuiz.auth.LoginUser;
 import com.project.todayQuiz.auth.jwt.TokenProvider;
 import com.project.todayQuiz.auth.jwt.dto.TokenResponse;
+import com.project.todayQuiz.auth.jwt.dto.UserInfo;
 import com.project.todayQuiz.auth.jwt.refreshToken.RefreshTokenDao;
 import com.project.todayQuiz.auth.securityToken.SecurityTokenDao;
 import com.project.todayQuiz.auth.securityToken.AuthInfo;
@@ -26,10 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class UserController {
 
-    private final TokenProvider tokenProvider;
     private final SecurityTokenDao securityTokenDao;
-    private final RefreshTokenDao refreshTokenDao;
-
     private final UserService userService;
 
     @GetMapping("/user")
@@ -40,6 +39,7 @@ public class UserController {
     @GetMapping("/api/nickname")
     @ResponseBody
     public ResponseEntity<NicknameCheckResponse> checkNickname(@RequestBody NicknameCheckRequest checkRequest) {
+
         NicknameCheckResponse nicknameCheckResponse = new NicknameCheckResponse(userService.checkDuplicatedNickname(checkRequest.getNickname()));
         return ResponseEntity.ok(nicknameCheckResponse);
     }
