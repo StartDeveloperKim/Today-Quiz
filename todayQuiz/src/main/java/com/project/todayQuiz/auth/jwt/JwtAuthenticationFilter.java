@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -28,7 +29,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -45,11 +48,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info("JWT Filter running... {}", request.getRequestURI());
 
             String accessToken = tokenResponse.getAccessToken();
-            if (accessToken == null) {
+            String refreshToken = tokenResponse.getRefreshToken();
+
+            if (accessToken == null && refreshToken != null) {
                 throw new JWTCookieExpireException();
             }
-
-            if (tokenProvider.validateToken(accessToken, TokenType.ACCESS)) {
+            if (accessToken!=null && tokenProvider.validateToken(accessToken, TokenType.ACCESS)) {
                 log.info("AccessToken Info : {}", accessToken);
                 saveUserInfo(request, accessToken);
             }
@@ -75,12 +79,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void saveUserInfo(HttpServletRequest request, String accessToken) {
         UserInfo userinfo = tokenProvider.getTokenInfo(accessToken, TokenType.ACCESS);
 
-        AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userinfo, null, AuthorityUtils.NO_AUTHORITIES);
+        AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userinfo, null, userinfo.getAuthorities());
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         securityContext.setAuthentication(authentication);
         SecurityContextHolder.setContext(securityContext);
+
     }
 
 }

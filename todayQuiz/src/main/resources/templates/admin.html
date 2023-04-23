@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
     <!-- font-awesome CSS 파일 로드 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <link rel="icon" href="data:,">
 </head>
 <body>
     <h1>관리자 페이지</h1>
@@ -49,13 +51,13 @@
         <nav aria-label="페이징">
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:classappend="${paging.previousPage? '':'disabled'}">
-                    <a class="page-link" th:href="'/admin/'+${paging.currentPage}-1" tabindex="-1" aria-disabled="true">이전</a>
+                    <a class="page-link" th:href="@{/admin/{page}(page=${paging.startPage - 1})}" tabindex="-1" aria-disabled="true">이전</a>
                 </li>
                 <li th:each="num : ${#numbers.sequence(paging.startPage, paging.endPage)}" class="page-item" th:classappend="${num==paging.currentPage ? 'active' : '' }">
-                    <a class="page-link" th:href="'/admin/'+ num + 1">1</a>
+                    <a class="page-link" th:href="@{/admin/{page}(page=${paging.currentPage})}">1</a>
                 </li>
                 <li class="page-item" th:classappend="${paging.nextPage? '':'disabled'}">
-                    <a class="page-link" th:href="'/admin/'+${paging.currentPage}+1">다음</a>
+                    <a class="page-link" th:href="@{/admin/{page}(page=${paging.endPage + 1})}">다음</a>
                 </li>
             </ul>
         </nav>

@@ -11,12 +11,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @RequiredArgsConstructor
@@ -43,10 +45,12 @@ public class WebSecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
-                .authorizeRequests()
-                .antMatchers("/css/**", "/js/**", "/api/logout", "/oauth2/**", "/auth").permitAll()
-                .antMatchers("/answer", "/user").hasAnyRole("ROLE_GUEST", "ROLE_ADMIN")
-                .antMatchers("/quiz").hasAnyRole("ROLE_ADMIN")
+                    .authorizeRequests()
+                    .antMatchers("/css/**", "/js/**", "/api/logout", "/oauth2/**", "/auth", "/favicon.ico").permitAll()
+                    .antMatchers("/answer", "/user").hasAnyRole("GUEST", "ADMIN")
+                    .antMatchers("/quiz").hasRole("ADMIN")
+                    .antMatchers("/admin").hasRole("ADMIN")
+
                 //, "/login", "/logout", "/oauth2/**", "/auth"
 //                .anyRequest().authenticated()
 
@@ -80,7 +84,7 @@ public class WebSecurityConfig {
                 .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
 
                 .and()
-                .addFilterAfter(new JwtAuthenticationFilter(tokenProvider, refreshTokenDao), BasicAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider, refreshTokenDao), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -88,7 +92,6 @@ public class WebSecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                .regexMatchers("/api/reissue");
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 }

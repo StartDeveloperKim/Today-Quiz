@@ -23,6 +23,9 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         TokenResponse tokenResponse = CookieUtil.parseToken(request);
         System.out.println("tokenResponse.getRefreshToken() = " + tokenResponse.getRefreshToken());
-        refreshTokenDao.deleteValues(tokenResponse.getRefreshToken());
+        String refreshToken = tokenResponse.getRefreshToken();
+        if (refreshToken != null) {
+            refreshTokenDao.deleteValues(refreshToken);
+        }
     }
 }

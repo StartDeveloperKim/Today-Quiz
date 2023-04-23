@@ -10,18 +10,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-@Controller("/admin")
+@Controller
+@RequestMapping("/admin")
 public class AdminController {
 
     private final QuizService quizService;
 
     @GetMapping("/{page}")
-    public String adminPage(@PathVariable("page") int page,
+    public String adminPage(@PathVariable(value = "page") int page,
                             Model model) {
         int size = 10;
         Paging pagingInfo = Paging.of(page, quizService.countQuiz());
