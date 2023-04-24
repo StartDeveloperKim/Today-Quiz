@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>에러 페이지</title>
+  <style>
+    /* 전체 화면을 덮는 컨테이너 */
+    .error-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* 에러 메시지 스타일링 */
+    .error-message {
+      color: red;
+      font-size: 80px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    /* 홈으로 링크 스타일링 */
+    .home-link {
+      font-size: 18px;
+      text-align: center;
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .home-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+<div class="error-container">
+  <div>
+    <div class="error-message">"접근 권한이 없습니다!!!"</div>
+    <a href="/" class="home-link">홈 페이지로...</a>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
+<script>
+  // Three.js를 활용하여 접근 권한이 없습니다 문구를 움직이는 애니메이션을 추가
+  var errorText = document.querySelector('.error-message');
+
+  // 애니메이션을 위한 변수 설정
+  var animationSpeed = 0.2; // 애니메이션 속도
+  var initialRotation = 0; // 초기 회전 값
+
+  function animateErrorText() {
+    // 새로운 회전 값을 계산하여 스타일에 적용
+    initialRotation += animationSpeed;
+    errorText.style.transform = 'rotate(' + initialRotation + 'deg)';
+
+    // 애니메이션 프레임 요청
+    requestAnimationFrame(animateErrorText);
+  }
+
+  // 애니메이션 시작
+  animateErrorText();
+</script>
+</body>
+
+</html>

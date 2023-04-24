@@ -1,6 +1,7 @@
 package com.project.todayQuiz.config;
 
 import com.project.todayQuiz.auth.CustomLogoutSuccessHandler;
+import com.project.todayQuiz.auth.exception.CustomAccessDeniedHandler;
 import com.project.todayQuiz.auth.jwt.JwtAuthenticationFilter;
 import com.project.todayQuiz.auth.jwt.TokenProvider;
 import com.project.todayQuiz.auth.jwt.refreshToken.RefreshTokenDao;
@@ -44,12 +45,12 @@ public class WebSecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
-                    .authorizeRequests()
+                .authorizeRequests()
 
-                    .mvcMatchers("/css/**", "/js/**", "/api/logout", "/oauth2/**", "/auth", "/favicon.ico").permitAll()
-                    .mvcMatchers("/answer", "/user", "/api/nickname").hasAnyAuthority("ROLE_GUEST", "ROLE_ADMIN")
-                    .mvcMatchers("/quiz").hasAuthority("ROLE_ADMIN")
-                    .mvcMatchers(GET, "/admin/**").hasAuthority("ROLE_ADMIN")
+                .mvcMatchers("/css/**", "/js/**", "/api/logout", "/oauth2/**", "/auth", "/favicon.ico").permitAll()
+                .mvcMatchers("/answer", "/user", "/api/nickname").hasAnyAuthority("ROLE_GUEST", "ROLE_ADMIN")
+                .mvcMatchers("/quiz").hasAuthority("ROLE_ADMIN")
+                .mvcMatchers(GET, "/admin/**").hasAuthority("ROLE_ADMIN")
 
                 //, "/login", "/logout", "/oauth2/**", "/auth"
 //                .anyRequest().authenticated()
@@ -64,24 +65,25 @@ public class WebSecurityConfig {
 //                .baseUri("/auth/authorize")
 
                 .and()
-                    .oauth2Login()
-                    .userInfoEndpoint()
-                    .userService(oAuthUserService)
+                .oauth2Login()
+                .userInfoEndpoint()
+                .userService(oAuthUserService)
 
                 .and()
-                    .successHandler(oAuthSuccessHandler)
+                .successHandler(oAuthSuccessHandler)
 
                 .and()
-                    .logout()
-                    .logoutUrl("/api/logout")
-                    .logoutSuccessHandler(customLogoutSuccessHandler)
-                    .deleteCookies("accessToken", "refreshToken")
-                    .logoutSuccessUrl("/")
+                .logout()
+                .logoutUrl("/api/logout")
+                .logoutSuccessHandler(customLogoutSuccessHandler)
+                .deleteCookies("accessToken", "refreshToken")
+                .logoutSuccessUrl("/")
 
 
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
+//                .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
+                .accessDeniedHandler(new CustomAccessDeniedHandler())
 
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
