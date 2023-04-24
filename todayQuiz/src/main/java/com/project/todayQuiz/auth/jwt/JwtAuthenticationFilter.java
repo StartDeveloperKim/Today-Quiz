@@ -38,7 +38,8 @@ import java.util.Set;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
-    private final RefreshTokenDao refreshTokenDao;
+
+    private static final String LOGOUT_URL = "/api/logout";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -60,16 +61,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (JWTCookieExpireException | ExpiredJwtException e) {
             log.error("Expired AccessToken");
             String refreshToken = tokenResponse.getRefreshToken();
-            if (refreshToken!= null && tokenProvider.validateToken(refreshToken, TokenType.REFRESH)) {
-                TokenResponse newTokenResponse = tokenProvider.reissueAccessToken(refreshToken);
-                if (newTokenResponse == null) {
-                    response.sendRedirect("/api/logout");
-                }else {
-                    CookieUtil.addTokenCookie(response, newTokenResponse.getAccessToken(), newTokenResponse.getRefreshToken());
-                    saveUserInfo(request, newTokenResponse.getAccessToken());
+            try {
+                if (refreshToken != null && tokenProvider.validateToken(refreshToken, TokenType.REFRESH)) {
+                    TokenResponse newTokenResponse = tokenProvider.reissueAccessToken(refreshToken);
+                    if (newTokenResponse == null) {
+                        redirectLogoutURL(response);
+                    } else {
+                        CookieUtil.addTokenCookie(response, newTokenResponse.getAccessToken(), newTokenResponse.getRefreshToken());
+                        saveUserInfo(request, newTokenResponse.getAccessToken());
+                    }
+                } else {
+                    redirectLogoutURL(response);
                 }
-            }else {
-                response.sendRedirect("/api/logout");
+            } catch (ExpiredJwtException exception) {
+                redirectLogoutURL(response);
             }
         }
 
@@ -85,7 +90,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         securityContext.setAuthentication(authentication);
         SecurityContextHolder.setContext(securityContext);
+    }
 
+    private void redirectLogoutURL(HttpServletResponse response) throws IOException {
+        response.sendRedirect(LOGOUT_URL);
     }
 
 }

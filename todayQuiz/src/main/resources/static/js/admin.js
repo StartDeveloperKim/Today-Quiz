@@ -26,13 +26,12 @@ function postQuiz() {
             minute: minute
         },
         success: function(response) {
-            // 성공적으로 요청이 완료되었을 때 실행되는 콜백 함수
-            console.log('요청이 성공적으로 완료되었습니다.');
-            console.log('응답 데이터:', response);
+            alert("퀴즈가 등록되었습니다.");
+            window.location.href = "/admin/1";
         },
         error: function(xhr, status, error) {
             // 요청이 실패했을 때 실행되는 콜백 함수
-            console.log('요청이 실패하였습니다.');
+            alert('요청이 실패하였습니다.');
             console.log('에러:', error);
         }
     });

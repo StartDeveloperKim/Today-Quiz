@@ -12,10 +12,10 @@ import java.util.List;
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
-    private final LoginUserArgumentResolver loginUserArgumentResolver;
-
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(loginUserArgumentResolver);
-    }
+//    private final LoginUserArgumentResolver loginUserArgumentResolver;
+//
+//    @Override
+//    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+//        resolvers.add(loginUserArgumentResolver);
+//    }
 }

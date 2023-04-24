@@ -2,7 +2,6 @@ package com.project.todayQuiz.config;
 
 import com.project.todayQuiz.auth.CustomLogoutSuccessHandler;
 import com.project.todayQuiz.auth.jwt.JwtAuthenticationFilter;
-import com.project.todayQuiz.auth.jwt.RefreshTokenService;
 import com.project.todayQuiz.auth.jwt.TokenProvider;
 import com.project.todayQuiz.auth.jwt.refreshToken.RefreshTokenDao;
 import com.project.todayQuiz.auth.oauth.OAuthSuccessHandler;
@@ -19,7 +18,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
+import static org.springframework.http.HttpMethod.*;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -31,7 +31,6 @@ public class WebSecurityConfig {
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
     private final TokenProvider tokenProvider;
-    private final RefreshTokenDao refreshTokenDao;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -46,10 +45,11 @@ public class WebSecurityConfig {
 
                 .and()
                     .authorizeRequests()
-                    .antMatchers("/css/**", "/js/**", "/api/logout", "/oauth2/**", "/auth", "/favicon.ico").permitAll()
-                    .antMatchers("/answer", "/user").hasAnyRole("GUEST", "ADMIN")
-                    .antMatchers("/quiz").hasRole("ADMIN")
-                    .antMatchers("/admin").hasRole("ADMIN")
+
+                    .mvcMatchers("/css/**", "/js/**", "/api/logout", "/oauth2/**", "/auth", "/favicon.ico").permitAll()
+                    .mvcMatchers("/answer", "/user", "/api/nickname").hasAnyAuthority("ROLE_GUEST", "ROLE_ADMIN")
+                    .mvcMatchers("/quiz").hasAuthority("ROLE_ADMIN")
+                    .mvcMatchers(GET, "/admin/**").hasAuthority("ROLE_ADMIN")
 
                 //, "/login", "/logout", "/oauth2/**", "/auth"
 //                .anyRequest().authenticated()
@@ -84,7 +84,7 @@ public class WebSecurityConfig {
                 .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
 
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider, refreshTokenDao), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

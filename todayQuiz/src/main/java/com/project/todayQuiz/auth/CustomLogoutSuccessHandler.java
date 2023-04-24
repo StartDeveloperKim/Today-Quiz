@@ -27,5 +27,6 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
         if (refreshToken != null) {
             refreshTokenDao.deleteValues(refreshToken);
         }
+        response.sendRedirect("/");
     }
 }

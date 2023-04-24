@@ -1,27 +1,21 @@
 package com.project.todayQuiz.user.controller;
 
-import com.project.todayQuiz.auth.LoginUser;
-import com.project.todayQuiz.auth.jwt.TokenProvider;
-import com.project.todayQuiz.auth.jwt.dto.TokenResponse;
-import com.project.todayQuiz.auth.jwt.dto.UserInfo;
-import com.project.todayQuiz.auth.jwt.refreshToken.RefreshTokenDao;
-import com.project.todayQuiz.auth.securityToken.SecurityTokenDao;
 import com.project.todayQuiz.auth.securityToken.AuthInfo;
+import com.project.todayQuiz.auth.securityToken.SecurityTokenDao;
 import com.project.todayQuiz.user.dto.NicknameCheckRequest;
 import com.project.todayQuiz.user.dto.NicknameCheckResponse;
 import com.project.todayQuiz.user.service.UserService;
-import com.project.todayQuiz.user.util.CookieType;
-import com.project.todayQuiz.user.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.annotation.security.RolesAllowed;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -31,11 +25,16 @@ public class UserController {
     private final SecurityTokenDao securityTokenDao;
     private final UserService userService;
 
+    private final String GUEST = "ROLE_GUEST";
+    private final String ADMIN = "ROLE_ADMIN";
+
+    @RolesAllowed({GUEST, ADMIN})
     @GetMapping("/user")
     public String myPage() {
         return "myPage";
     }
 
+    @RolesAllowed({GUEST, ADMIN})
     @GetMapping("/api/nickname")
     @ResponseBody
     public ResponseEntity<NicknameCheckResponse> checkNickname(@RequestBody NicknameCheckRequest checkRequest) {
