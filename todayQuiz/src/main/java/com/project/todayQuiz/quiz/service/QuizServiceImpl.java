@@ -2,7 +2,8 @@ package com.project.todayQuiz.quiz.service;
 
 import com.project.todayQuiz.quiz.domain.Quiz;
 import com.project.todayQuiz.quiz.domain.QuizRepository;
-import com.project.todayQuiz.quiz.dto.request.QuizPostRequest;
+import com.project.todayQuiz.quiz.dto.request.QuizRequest;
+import com.project.todayQuiz.quiz.dto.request.QuizUpdateRequest;
 import com.project.todayQuiz.quiz.dto.response.AdminQuizResponse;
 import com.project.todayQuiz.quiz.dto.response.TodayQuizResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,13 +27,13 @@ public class QuizServiceImpl implements QuizService{
     private final QuizRepository quizRepository;
 
     @Override
-    public Long postQuiz(QuizPostRequest quizPostRequest) {
-        if (!quizRepository.existsQuizByPostDate(quizPostRequest.getYear(), quizPostRequest.getMonth(), quizPostRequest.getDay())) {
-            LocalDateTime postDate = LocalDateTime.of(quizPostRequest.getYear(), quizPostRequest.getMonth(), quizPostRequest.getDay(),
-                    quizPostRequest.getHour(), quizPostRequest.getMinute());
+    public Long postQuiz(QuizRequest quizRequest) {
+        if (!quizRepository.existsQuizByPostDate(quizRequest.getYear(), quizRequest.getMonth(), quizRequest.getDay())) {
+            LocalDateTime postDate = LocalDateTime.of(quizRequest.getYear(), quizRequest.getMonth(), quizRequest.getDay(),
+                    quizRequest.getHour(), quizRequest.getMinute());
             Quiz quiz = Quiz.builder()
-                    .question(quizPostRequest.getQuestion())
-                    .answer(quizPostRequest.getAnswer())
+                    .question(quizRequest.getQuestion())
+                    .answer(quizRequest.getAnswer())
                     .postDate(postDate)
                     .createDate(LocalDateTime.now())
                     .build();
@@ -44,9 +46,10 @@ public class QuizServiceImpl implements QuizService{
     @Transactional(readOnly = true)
     @Override
     public TodayQuizResponse getTodayQuiz(LocalDate quizDate) {
-        Quiz quiz = quizRepository.findQuizByPostDate(quizDate.getYear(), quizDate.getMonthValue(), quizDate.getDayOfMonth());
+        Optional<Quiz> quizByPostDate = quizRepository.findQuizByPostDate(quizDate.getYear(), quizDate.getMonthValue(), quizDate.getDayOfMonth());
 
-        return new TodayQuizResponse(quiz.getQuestion(), quiz.getPostDate());
+        return quizByPostDate.isEmpty() ?
+                new TodayQuizResponse("nothing", "nothing") : new TodayQuizResponse(quizByPostDate.get().getQuestion(), quizByPostDate.get().getPostDate());
     }
 
     @Transactional(readOnly = true)
@@ -56,6 +59,19 @@ public class QuizServiceImpl implements QuizService{
         List<Quiz> quizzes = quizRepository.findAll(pageInfo).getContent();
 
         return quizzes.stream().map(AdminQuizResponse::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateQuiz(QuizUpdateRequest quizUpdateRequest) {
+        Quiz quiz = quizRepository.findById(quizUpdateRequest.getId()).get();
+        quiz.updateQuiz(quizUpdateRequest.getQuestion(), quizUpdateRequest.getAnswer(),
+                LocalDateTime.of(
+                        quizUpdateRequest.getYear(),
+                        quizUpdateRequest.getMonth(),
+                        quizUpdateRequest.getDay(),
+                        quizUpdateRequest.getHour(),
+                        quizUpdateRequest.getMinute()
+                ));
     }
 
     @Override

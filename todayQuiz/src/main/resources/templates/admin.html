@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
+    <style>
+        td a {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <header class="admin-header">
@@ -34,23 +39,21 @@
     <div class="container mt-5">
         <div class="row">
             <!-- 퀴즈 등록 폼 -->
-            <div class="col-md-4">
+            <div class="col-md-4" id="inputForm">
                 <h3 class="mb-3 font-weight-bold">퀴즈 등록</h3>
-                <form>
-                    <div class="form-group">
-                        <label for="question">질문</label>
-                        <textarea class="form-control" id="question" name="question" rows="5" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="answer">정답</label>
-                        <input type="text" class="form-control" id="answer" name="answer" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="postDatetime">등록일</label>
-                        <input type="datetime-local" class="form-control" id="postDatetime" name="postDatetime" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">등록</button>
-                </form>
+                <div class="form-group">
+                    <label for="question">질문</label>
+                    <textarea class="form-control" id="question" name="question" rows="5" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="answer">정답</label>
+                    <input type="text" class="form-control" id="answer" name="answer" required>
+                </div>
+                <div class="form-group">
+                    <label for="postDatetime">등록일</label>
+                    <input type="datetime-local" class="form-control" id="postDatetime" name="postDatetime" required>
+                </div>
+                <button onclick="postQuiz()" class="btn btn-primary" id="postBtn">등록</button>
             </div>
 
             <div class="col-md-8">
@@ -61,16 +64,16 @@
                         <th class="col-sm-1 text-center">번호</th>
                         <th class="col-sm-6 text-center">질문</th>
                         <th class="col-sm-2 text-center">정답</th>
-                        <th class="col-sm-4 text-center">등록일</th>
+                        <th class="col-sm-4 text-center">퀴즈날짜</th>
                     </tr>
                     </thead>
                     <tbody>
                     <!-- 표 데이터를 동적으로 추가할 부분 -->
                     <tr th:each="quiz : ${quizzes}">
-                        <td class="text-center" th:text="${quiz.id}">1</td>
-                        <td th:text="${quiz.question}">홍길동</td>
-                        <td th:text="${quiz.answer}">25</td>
-                        <td class="text-center" th:text="${quiz.postDate}">2022-01-01</td>
+                        <td th:id="${quiz.id}" class="text-center" th:text="${quiz.id}">1</td>
+                        <td><a th:onclick="addButton(this.getAttribute('quizId'))" th:text="${quiz.question}" th:quizId="${quiz.id}" th:id="'question'+${quiz.id}"></a></td>
+                        <td th:text="${quiz.answer}" th:id="'answer'+${quiz.id}">25</td>
+                        <td class="text-center" th:text="${quiz.postDate}" th:id="'postDate'+${quiz.id}">2022-01-01</td>
                     </tr>
                     </tbody>
                     <!-- 페이징 정보를 표시하는 부분 -->
@@ -92,8 +95,8 @@
         </div>
     </div>
 </body>
-<script src="/js/admin.js"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/js/admin.js"></script>
 </html>

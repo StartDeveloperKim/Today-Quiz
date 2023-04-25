@@ -39,12 +39,9 @@ public class Quiz {
         this.postDate = postDate;
     }
 
-    public void updateQuiz(String question, String answer) {
+    public void updateQuiz(String question, String answer, LocalDateTime postDate) {
         this.question = question;
         this.answer = answer;
-    }
-
-    public void updateDate(LocalDateTime newDate) {
-        this.postDate = newDate;
+        this.postDate = postDate;
     }
 }

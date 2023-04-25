@@ -44,15 +44,11 @@
                 <div id="error-message" class="invalid-feedback font-weight-bold">정답을 입력해주세요!!</div>
                 <!-- 전송 버튼 -->
                 <button id="send-button" class="mr-2" onclick="sendData()" disabled>정답제출</button>
+                <div id="quizTime" th:data-mydata="${todayQuiz!=null ? todayQuiz.postDate : 'nothing'}"></div>
             </div>
         </div>
     </div>
 </body>
 <script src="/js/index.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!--<script th:inline="javascript">-->
-<!--    const accessToken = /*[[${accessToken}]]*/ '';-->
-<!--    /* localStorage에 accessToken 저장하기 */-->
-<!--    localStorage.setItem('accessToken', accessToken);-->
-<!--</script>-->
 </html>

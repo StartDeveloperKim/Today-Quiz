@@ -17,6 +17,6 @@ public class AdminQuizResponse {
         this.id = quiz.getId();
         this.question = quiz.getQuestion();
         this.answer = quiz.getAnswer();
-        this.postDate = quiz.getPostDate().format(DateTimeFormatter.ISO_DATE);
+        this.postDate = quiz.getPostDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 }

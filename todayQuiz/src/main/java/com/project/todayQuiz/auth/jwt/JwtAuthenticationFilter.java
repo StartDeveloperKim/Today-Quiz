@@ -54,7 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (accessToken == null && refreshToken != null) {
                 throw new JWTCookieExpireException();
             }
-            if (accessToken!=null && tokenProvider.validateToken(accessToken, TokenType.ACCESS)) {
+            if (accessToken != null && tokenProvider.validateToken(accessToken, TokenType.ACCESS)) {
                 log.info("AccessToken Info : {}", accessToken);
                 saveUserInfo(request, accessToken);
             }
@@ -76,6 +76,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             } catch (ExpiredJwtException exception) {
                 redirectLogoutURL(response);
             }
+        } catch (Exception e) {
+            redirectLogoutURL(response);
         }
 
         filterChain.doFilter(request, response);

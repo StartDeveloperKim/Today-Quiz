@@ -82,15 +82,17 @@ public class TokenProvider {
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.error("잘못된 JWT 서명입니다.");
+            throw e;
         } catch (ExpiredJwtException e) {
             log.error("만료된 JWT 토큰입니다.");
             throw e;
         } catch (UnsupportedJwtException e) {
             log.error("지원되지 않는 JWT 토큰입니다.");
+            throw e;
         } catch (IllegalArgumentException e) {
             log.error("JWT 토큰이 잘못되었습니다.");
+            throw e;
         }
-        return false;
     }
 
     public UserInfo getTokenInfo(String token, TokenType tokenType) {

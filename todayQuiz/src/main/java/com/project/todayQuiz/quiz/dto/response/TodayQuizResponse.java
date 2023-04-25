@@ -13,6 +13,11 @@ public class TodayQuizResponse {
 
     public TodayQuizResponse(String question, LocalDateTime postDate) {
         this.question = question;
-        this.postDate = postDate.format(DateTimeFormatter.ISO_DATE);
+        this.postDate = postDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    }
+
+    public TodayQuizResponse(String question, String postDate) {
+        this.question = question;
+        this.postDate = postDate;
     }
 }
