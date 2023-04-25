@@ -9,6 +9,7 @@ import com.project.todayQuiz.quiz.dto.response.TodayQuizResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +56,7 @@ public class QuizServiceImpl implements QuizService{
     @Transactional(readOnly = true)
     @Override
     public List<AdminQuizResponse> getQuizList(int page, int size) {
-        PageRequest pageInfo = PageRequest.of(page - 1, size);
+        PageRequest pageInfo = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "postDate"));
         List<Quiz> quizzes = quizRepository.findAll(pageInfo).getContent();
 
         return quizzes.stream().map(AdminQuizResponse::new).collect(Collectors.toList());

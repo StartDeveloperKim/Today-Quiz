@@ -24,7 +24,7 @@ public class Paging {
         Paging paging = new Paging();
 
         paging.endPage = (int) (Math.ceil(page / (double) paging.displayPageNum)) * paging.displayPageNum;
-        paging.startPage = paging.endPage - 10;
+        paging.startPage = paging.endPage - 9;
 
         paging.currentPage = page;
         paging.realEndPage = (int) (Math.ceil(totalBoard / (double) paging.displayPageNum));
@@ -34,7 +34,7 @@ public class Paging {
         }
 
         paging.isPreviousPage = (paging.currentPage - 1) > 0;
-        paging.isNextPage = (paging.realEndPage - paging.currentPage) > 0;
+        paging.isNextPage = paging.currentPage != paging.realEndPage;
 
         return paging;
     }

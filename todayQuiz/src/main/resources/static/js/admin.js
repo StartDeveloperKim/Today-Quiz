@@ -48,8 +48,8 @@ function postQuiz() {
             },
             error: function(xhr, status, error) {
                 // 요청이 실패했을 때 실행되는 콜백 함수
-                alert('요청이 실패하였습니다.');
-                console.log('에러:', error);
+                alert("중복된 날짜의 퀴즈는 등록하지 못합니다.");
+                console.log('에러:', xhr.response);
             }
         });
     }

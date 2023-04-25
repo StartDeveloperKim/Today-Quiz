@@ -81,13 +81,13 @@
                 <nav aria-label="페이징">
                     <ul class="pagination justify-content-center">
                         <li class="page-item" th:classappend="${paging.previousPage? '':'disabled'}">
-                            <a class="page-link" th:href="@{/admin/{page}(page=${paging.startPage - 1})}" tabindex="-1" aria-disabled="true">이전</a>
+                            <a class="page-link" th:href="@{/admin/{page}(page=${paging.currentPage - 1})}" tabindex="-1" aria-disabled="true">이전</a>
                         </li>
                         <li th:each="num : ${#numbers.sequence(paging.startPage, paging.endPage)}" class="page-item" th:classappend="${num==paging.currentPage ? 'active' : '' }">
-                            <a class="page-link" th:href="@{/admin/{page}(page=${paging.currentPage})}">1</a>
+                            <a class="page-link" th:href="@{/admin/{page}(page=${num})}" th:text="${num}">1</a>
                         </li>
                         <li class="page-item" th:classappend="${paging.nextPage? '':'disabled'}">
-                            <a class="page-link" th:href="@{/admin/{page}(page=${paging.endPage + 1})}">다음</a>
+                            <a class="page-link" th:href="@{/admin/{page}(page=${paging.currentPage + 1})}">다음</a>
                         </li>
                     </ul>
                 </nav>

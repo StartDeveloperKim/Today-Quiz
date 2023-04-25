@@ -1,5 +1,5 @@
-// 시간은 퀴즈 날짜를 파라미터로 넘겨 사용하자.
-function showCurrentTime(quizDate) {
+function showCurrentTime() {
+    const quizDate = document.getElementById("quizTime").getAttribute("data-mydata");
     let remainDiv = document.getElementById("remainingTime");
     if (quizDate === 'nothing') {
         remainDiv.innerHTML = "오늘은 퀴즈가 없습니다!!!";
@@ -31,9 +31,7 @@ function showCurrentTime(quizDate) {
 }
 
 window.onload = function () {
-    const quizDate = document.getElementById("quizTime").getAttribute("data-mydata");
-    console.log(quizDate);
-    setInterval(showCurrentTime(quizDate), 1000);
+    setInterval(showCurrentTime, 1000);
 }
 
 function handleKeyPress(event) {
