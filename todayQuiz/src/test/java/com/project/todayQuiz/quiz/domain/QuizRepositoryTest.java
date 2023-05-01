@@ -42,7 +42,7 @@ class QuizRepositoryTest {
         //when
         LocalDate postDate = LocalDate.of(2023, 4, 23);
         Quiz findQuiz = quizRepository
-                .findQuizByPostDate(postDate.getYear(), postDate.getMonthValue(), postDate.getDayOfMonth());
+                .findQuizByPostDate(postDate.getYear(), postDate.getMonthValue(), postDate.getDayOfMonth()).get();
         //then
         assertThat(savedQuiz.getId()).isEqualTo(findQuiz.getId());
     }
@@ -53,6 +53,15 @@ class QuizRepositoryTest {
         LocalDate postDate = LocalDate.of(2023, 4, 23);
         Boolean result = quizRepository
                 .existsQuizByPostDate(postDate.getYear(), postDate.getMonthValue(), postDate.getDayOfMonth());
+        //then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void 오늘날짜와_정답을_전달하여_정답이_있는지_확인한다() {
+        //given
+        //when
+        Boolean result = quizRepository.checkAnswer(2023, 4, 23, "answer");
         //then
         assertThat(result).isTrue();
     }

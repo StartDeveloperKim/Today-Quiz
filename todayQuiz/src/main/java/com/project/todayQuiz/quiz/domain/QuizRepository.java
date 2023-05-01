@@ -20,4 +20,13 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     Boolean existsQuizByPostDate(@Param("year") int year,
                                  @Param("month") int month,
                                  @Param("day") int day);
+
+    // TODO : 2023-05-01 일단 DB에서 오늘 날짜와 클라이언트가 제출한 정답을 비교하여 True or False로 가져오는 쿼리를 쓰지만
+    //  나중에 스프링 스케쥴러를 활용해서 Redis에 오늘의 퀴즈 정답을 가져와서 사용하는 전략으로 리팩토링하자.
+    @Query("select count(q) > 0 from Quiz q where YEAR(q.postDate)=:year and MONTH(q.postDate)=:month and DAY(q.postDate)=:day " +
+            "and q.answer = :answer")
+    Boolean checkAnswer(@Param("year") int year,
+                        @Param("month") int month,
+                        @Param("day") int day,
+                        @Param("answer") String answer);
 }
