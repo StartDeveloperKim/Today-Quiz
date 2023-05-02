@@ -1,13 +1,17 @@
 package com.project.todayQuiz.answer.dto;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 public class AnswerResponse {
-    private final Boolean isAnswer;
+    private final String state;
     private final String message;
+    private final Integer todayRank;
 
-    public AnswerResponse(Boolean isAnswer, AnswerState answerState) {
-        this.isAnswer = isAnswer;
-        this.message = answerState.getStateMessage();
+    public AnswerResponse(String state, String message, Integer todayRank) {
+        this.state = state;
+        this.message = message;
+        this.todayRank = todayRank;
     }
 }

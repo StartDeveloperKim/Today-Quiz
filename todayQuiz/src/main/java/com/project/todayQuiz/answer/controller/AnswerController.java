@@ -30,11 +30,10 @@ public class AnswerController {
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_GUEST')")
     @PostMapping
-    public ResponseEntity<?> checkAnswer(@RequestBody AnswerRequest answerRequest,
+    public ResponseEntity<AnswerResponse> checkAnswer(@RequestBody AnswerRequest answerRequest,
                                          @AuthenticationPrincipal UserInfo userInfo) {
-        Boolean result = answerService.checkAnswer(answerRequest.getAnswer(), LocalDateTime.now(), userInfo.getEmail());
-        return ResponseEntity.ok(new AnswerResponse(
-                result, result.equals(Boolean.TRUE) ? CORRECT : WRONG
-        ));
+        AnswerResponse answerResponse = answerService.checkAnswer(answerRequest.getAnswer(), LocalDateTime.now(), userInfo.getEmail());
+
+        return ResponseEntity.ok(answerResponse);
     }
 }

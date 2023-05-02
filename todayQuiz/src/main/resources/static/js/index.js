@@ -57,7 +57,28 @@ function sendData() {
         // 서버로 데이터 전송하는 로직 작성
         // 예시로 콘솔에 입력된 데이터 출력
         document.getElementById('error-message').style.display = 'none';
-        console.log('전송할 데이터:', inputText);
+
+        $.ajax({
+            url: '/answer', // 요청 보낼 URL
+            type: 'POST', // 요청 메소드
+            contentType: 'application/json', // 응답 데이터 타입 (JSON 형식으로 응답을 기대하는 경우)
+            data: JSON.stringify({answer: inputText}),
+            dataType : 'json',
+            success: function(data) {
+                let resultStr = data.message
+                if (data.state === "CORRECT") {
+                    resultStr += data.todayRank + "순위로 정답을 맞추셨습니다!!";
+                }
+                // $('.alert').remove(); // Alert 컴포넌트가 이미 존재한다면 제거
+                // $('body').append('<div class="alert alert-success" role="alert">Ajax 통신이 성공적으로 완료되었습니다!</div>');
+                alert(resultStr);
+            },
+            error: function(xhr, status, error) {
+                // 요청이 실패했을 때 실행되는 콜백 함수
+                alert("에러에러");
+                console.log('에러:', xhr.response);
+            }
+        });
     }
 }
 

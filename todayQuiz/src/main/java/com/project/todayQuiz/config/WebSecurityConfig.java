@@ -48,7 +48,8 @@ public class WebSecurityConfig {
                 .authorizeRequests()
 
                 .mvcMatchers("/css/**", "/js/**", "/api/logout", "/oauth2/**", "/auth", "/favicon.ico").permitAll()
-                .mvcMatchers("/answer", "/user", "/api/nickname").hasAnyAuthority("ROLE_GUEST", "ROLE_ADMIN")
+                .mvcMatchers(POST, "/answer", "/user", "/api/nickname").hasAnyAuthority("ROLE_GUEST", "ROLE_ADMIN")
+                .mvcMatchers(GET, "/answer", "/user", "/api/nickname").hasAnyAuthority("ROLE_GUEST", "ROLE_ADMIN")
                 .mvcMatchers("/quiz").hasAuthority("ROLE_ADMIN")
                 .mvcMatchers(GET, "/admin/**").hasAuthority("ROLE_ADMIN")
 

@@ -37,6 +37,7 @@
         <div class="text-center justify-content-center align-items-center">
             <!-- 현재 시간을 표시하는 요소 -->
             <h1 id="remainingTime" class="display-4 font-weight-bold"></h1>
+            <h5 th:if="${todayQuiz.isPost == true}" th:text="${todayQuiz.question}" class="display-4 font-weight-bold" style="color: forestgreen">질문</h5>
             <div class="d-flex justify-content-center align-items-center mt-3 flex-column">
                 <!-- 텍스트 입력 창 -->
                 <input id="text-input" class="justify-content-center ml-3 form-control" type="text" disabled
