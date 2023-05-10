@@ -57,13 +57,14 @@ public class UserController {
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         log.info("로그인 POST {}", loginRequest.toString());
         LoginResponse loginResponse = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+        log.info("로그인 결과 : {}", loginResponse.toString());
         return ResponseEntity.ok(loginResponse);
     }
 
-    @GetMapping("/signup")
-    public String signUpForm() {
-        return "signup";
-    }
+//    @GetMapping("/signup")
+//    public String signUpForm() {
+//        return "signup";
+//    }
 
     @PostMapping("/signup")
     @ResponseBody

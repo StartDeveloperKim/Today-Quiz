@@ -41,9 +41,9 @@ function checkDuplicate(url, type) {
 }
 
 function signUp() {
-    const email = $('#email').val();
-    const password = $('#password').val();
-    const nickname = $('#nickname').val();
+    const email = $('#signUp_email').val();
+    const password = $('#signUp_password').val();
+    const nickname = $('#signUp_nickname').val();
 
     if (email === '' || password === '' || nickname === '') {
         alert("이메일, 비밀번호, 닉네임을 모두 등록해주세요");
