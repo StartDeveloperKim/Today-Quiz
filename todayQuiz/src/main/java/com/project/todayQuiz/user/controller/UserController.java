@@ -53,9 +53,11 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute LoginRequest loginRequest) {
-        log.info("로그인 POST");
-        return "redirect:/";
+    @ResponseBody
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+        log.info("로그인 POST {}", loginRequest.toString());
+        LoginResponse loginResponse = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+        return ResponseEntity.ok(loginResponse);
     }
 
     @GetMapping("/signup")
