@@ -22,6 +22,8 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    private String password;
+
     private String picture;
 
     private String authProvider;
@@ -36,8 +38,9 @@ public class User {
     private LocalDateTime joinDate;
 
     @Builder
-    public User(String email, String picture, String authProvider, String nickname, Role role) {
+    public User(String email, String picture, String authProvider, String nickname, Role role, String password) {
         this.email = email;
+        this.password = password;
         this.picture = picture;
         this.authProvider = authProvider;
         this.nickname = nickname;

@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class NicknameCheckResponse {
+public class DuplicateResponse {
 
     private final Boolean isDuplicated;
 

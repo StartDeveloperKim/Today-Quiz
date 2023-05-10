@@ -2,6 +2,7 @@ package com.project.todayQuiz.config;
 
 import com.project.todayQuiz.auth.CustomLogoutSuccessHandler;
 import com.project.todayQuiz.auth.exception.CustomAccessDeniedHandler;
+import com.project.todayQuiz.auth.formLogin.FormLoginSuccessHandler;
 import com.project.todayQuiz.auth.jwt.JwtAuthenticationFilter;
 import com.project.todayQuiz.auth.jwt.TokenProvider;
 import com.project.todayQuiz.auth.jwt.refreshToken.RefreshTokenDao;
@@ -30,6 +31,7 @@ public class WebSecurityConfig {
     private final OAuthUserServiceImpl oAuthUserService;
     private final OAuthSuccessHandler oAuthSuccessHandler;
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
+    private final FormLoginSuccessHandler formLoginSuccessHandler;
 
     private final TokenProvider tokenProvider;
 
@@ -41,18 +43,23 @@ public class WebSecurityConfig {
 
                 .csrf().disable()
                 .httpBasic().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
                 .authorizeRequests()
 
-                .mvcMatchers("/css/**", "/js/**", "/api/logout", "/oauth2/**", "/auth", "/favicon.ico").permitAll()
-                .mvcMatchers(POST, "/answer", "/user", "/api/nickname").hasAnyAuthority("ROLE_GUEST", "ROLE_ADMIN")
-                .mvcMatchers(GET, "/answer", "/user", "/api/nickname").hasAnyAuthority("ROLE_GUEST", "ROLE_ADMIN")
-                .mvcMatchers("/quiz").hasAuthority("ROLE_ADMIN")
-                .mvcMatchers(GET, "/admin/**").hasAuthority("ROLE_ADMIN")
+                    .mvcMatchers(POST, "/answer", "/user", "/api/nickname").hasAnyAuthority("ROLE_GUEST", "ROLE_ADMIN")
+                    .mvcMatchers(GET, "/answer", "/user").hasAnyAuthority("ROLE_GUEST", "ROLE_ADMIN")
+                    .mvcMatchers("/quiz").hasAuthority("ROLE_ADMIN")
+                    .mvcMatchers(GET, "/admin/**").hasAuthority("ROLE_ADMIN")
+                    .anyRequest().permitAll()
 
+                .and()
+                    .formLogin()
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login-process")
+                        .defaultSuccessUrl("/")
                 //, "/login", "/logout", "/oauth2/**", "/auth"
 //                .anyRequest().authenticated()
 
@@ -66,28 +73,28 @@ public class WebSecurityConfig {
 //                .baseUri("/auth/authorize")
 
                 .and()
-                .oauth2Login()
-                .userInfoEndpoint()
-                .userService(oAuthUserService)
+                    .oauth2Login()
+                    .loginPage("/login")
+                    .userInfoEndpoint()
+                    .userService(oAuthUserService)
 
                 .and()
-                .successHandler(oAuthSuccessHandler)
+                    .successHandler(oAuthSuccessHandler)
 
                 .and()
-                .logout()
-                .logoutUrl("/api/logout")
-                .logoutSuccessHandler(customLogoutSuccessHandler)
-                .deleteCookies("accessToken", "refreshToken")
-                .logoutSuccessUrl("/")
+                    .logout()
+                    .logoutUrl("/api/logout")
+                    .logoutSuccessHandler(customLogoutSuccessHandler)
+                    .deleteCookies("accessToken", "refreshToken")
+                    .logoutSuccessUrl("/")
 
 
                 .and()
-                .exceptionHandling()
-//                .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
-                .accessDeniedHandler(new CustomAccessDeniedHandler())
+                    .exceptionHandling()
+                    .accessDeniedHandler(new CustomAccessDeniedHandler())
 
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+                    .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

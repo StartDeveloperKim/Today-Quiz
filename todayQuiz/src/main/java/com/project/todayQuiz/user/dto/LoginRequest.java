@@ -3,10 +3,14 @@ package com.project.todayQuiz.user.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-public class NicknameCheckRequest {
-    private String nickname;
+public class LoginRequest {
+
+    private String email;
+    private String password;
 }

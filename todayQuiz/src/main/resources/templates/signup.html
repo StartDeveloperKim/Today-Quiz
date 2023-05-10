@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+</head>
+<body>
+<div class="container">
+    <h1>회원가입</h1>
+
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="email" name="email" required>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="check-email-btn" onclick="duplicateEmail()">중복체크</button>
+            </div>
+        </div>
+        <div id="error-email" class="invalid-feedback font-weight-bold">중복된 이메일입니다.</div>
+    </div>
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <div class="form-group">
+        <label for="nickname">Nickname:</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="nickname" name="nickname" required>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="check-nickname-btn" onclick="duplicateNickname()">중복체크</button>
+            </div>
+        </div>
+        <div id="error-nickname" class="invalid-feedback font-weight-bold">중복된 닉네임입니다.</div>
+    </div>
+
+    <button onclick="signUp()" class="btn btn-primary">회원가입</button>
+</div>
+
+<script src="/js/signUp.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

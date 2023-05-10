@@ -17,9 +17,8 @@
     <!-- 부트스트랩 클래스 적용 -->
     <div class="container">
         <h1 id="quiz-title">오늘의 퀴즈</h1>
-        <a href="/oauth2/authorization/google" class="login-button" th:if="${userInfo==null}">
-            <i class="fab fa-google google-logo"></i>
-            로그인
+        <a href="/login" class="logout-button" th:if="${userInfo==null}">
+            <i class="fa-solid fa-arrow-right-to-bracket fa-lg"></i></i>로그인
         </a>
 
         <button onclick="window.location.href='/admin/1'" id="admin-page-button" th:if="${userInfo != null && userInfo.role.key=='ROLE_ADMIN'}">

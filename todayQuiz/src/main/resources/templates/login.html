@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+<h2>로그인</h2>
+<form method="post" action="/login">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" required>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required>
+    <button type="submit">Login</button>
+</form>
+<a href="/oauth2/authorization/google" class="login-button">
+    <i class="fab fa-google google-logo"></i>
+    로그인
+</a>
+<a href="/signup">
+    회원가입
+</a>
+</body>
+</html>
