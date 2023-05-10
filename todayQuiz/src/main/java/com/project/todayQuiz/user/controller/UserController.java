@@ -61,10 +61,6 @@ public class UserController {
         return ResponseEntity.ok(loginResponse);
     }
 
-//    @GetMapping("/signup")
-//    public String signUpForm() {
-//        return "signup";
-//    }
 
     @PostMapping("/signup")
     @ResponseBody

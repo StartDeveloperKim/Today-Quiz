@@ -19,13 +19,16 @@
                 <label for="signUp_email">
                     <input type="text" placeholder="아이디" id="signUp_email" name="email" required>
                 </label>
-                <div id="error-email" class="invalid-feedback font-weight-bold">중복된 이메일입니다.</div>
+                <div id="error-email" class="text-danger font-weight-bold" style="display: none">중복된 아이디입니다.</div>
+                <div id="good-email" class="text-success font-weight-bold" style="display: none">사용가능한 아이디입니다.</div>
                 <label for="signUp_password">
                     <input type="password" placeholder="비밀번호" id="signUp_password" name="password" required>
                 </label>
                 <label for="signUp_nickname">
                     <input type="text" placeholder="닉네임" id="signUp_nickname" name="nickname" required>
                 </label>
+                <div id="error-nickname" class="text-danger font-weight-bold" style="display: none">중복된 닉네임입니다.</div>
+                <div id="good-nickname" class="text-success font-weight-bold" style="display: none">사용가능한 닉네임입니다.</div>
                 <button type="button" class="form_btn" onclick="signUp()">Sign Up</button>
             </form>
 
@@ -63,8 +66,8 @@
     </div>
 </div>
 
+<script src="http://code.jquery.com/jquery-latest.js"></script>
 <script src="/js/login.js"></script>
 <script src="/js/signUp.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </body>
 </html>

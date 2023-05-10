@@ -1,10 +1,23 @@
+let emailTimeoutId;
+let nicknameTimeoutId;
+
+$("#signUp_email").on("input", () => {
+    clearTimeout(emailTimeoutId);
+    emailTimeoutId = setTimeout(duplicateEmail, 2000);
+})
+
+$("#signUp_nickname").on("input", () => {
+    clearTimeout(nicknameTimeoutId);
+    nicknameTimeoutId = setTimeout(duplicateNickname, 2000);
+})
+
 function duplicateEmail() {
-    const email = $("#email").val();
+    const email = document.getElementById("signUp_email").value;
     checkDuplicate("/api/email?email=" + email, "email");
 }
 
 function duplicateNickname() {
-    const nickname = $("#nickname").val();
+    const nickname = document.getElementById("signUp_nickname").value;
     checkDuplicate("/api/nickname?nickname=" + nickname, "nickname");
 }
 
@@ -16,11 +29,11 @@ function checkDuplicate(url, type) {
         success: function (data) {
             if (type === 'email') {
                 if (data.isDuplicated){
-                    $('#email').removeClass('is-valid').addClass('is-invalid');
                     $('#error-email').show();
+                    $('#good-email').hide();
                 }else{
-                    $('#email').removeClass('is-invalid').addClass('is-valid');
                     $('#error-email').hide();
+                    $('#good-email').show();
                 }
             }
 
@@ -28,9 +41,11 @@ function checkDuplicate(url, type) {
                 if (data.isDuplicated && type === "nickname") {
                     $('#nickname').removeClass('is-valid').addClass('is-invalid');
                     $('#error-nickname').show();
+                    $('#good-nickname').hide();
                 }else{
                     $('#nickname').removeClass('is-invalid').addClass('is-valid');
                     $('#error-nickname').hide();
+                    $('#good-nickname').show();
                 }
             }
         },
@@ -64,7 +79,6 @@ function signUp() {
                     window.location.href = "/login";
                 } else {
                     alert(data.message);
-                    window.location.href = "/signup";
                 }
             },
             error: function (xhr, status, error) {
