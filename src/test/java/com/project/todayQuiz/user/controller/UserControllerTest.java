@@ -70,12 +70,10 @@ class UserControllerTest {
     @WithMockUser(roles = "GUEST")
     void USER는_닉네임_변경_중복체크를_할_수_있다() throws Exception {
         //given
-        NicknameCheckRequest nickname = new NicknameCheckRequest("nickname");
-        String url = BASE_URL + port + "/api/nickname";
+        String nickname = "nickname";
+        String url = BASE_URL + port + "/api/nickname?nickname=" + nickname;
         //when
-        MvcResult mvcResult = mvc.perform(get(url)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(nickname)))
+        MvcResult mvcResult = mvc.perform(get(url))
                 .andExpect(status().isOk())
                 .andReturn();
 
