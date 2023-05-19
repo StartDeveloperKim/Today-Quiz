@@ -2,6 +2,7 @@ package com.project.todayQuiz.answer.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.todayQuiz.answer.dto.AnswerRequest;
+import com.project.todayQuiz.answer.dto.AnswerResponse;
 import com.project.todayQuiz.answer.dto.AnswerState;
 import com.project.todayQuiz.answer.service.AnswerService;
 import com.project.todayQuiz.auth.jwt.dto.UserInfo;
@@ -21,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -29,6 +31,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
 
+import static com.project.todayQuiz.answer.dto.AnswerState.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -63,14 +66,14 @@ class AnswerControllerTest {
     @WithAuthUser(email = "email", nickname = "nickname", role="ROLE_GUEST")
     void GUEST는_오늘의퀴즈의_정답을_제출할_수_있다() throws Exception {
         //given
-        AnswerRequest answerRequest = new AnswerRequest("submitAnswer");
-        doReturn(AnswerState.CORRECT).when(answerService).checkAnswer(anyString(), any(), anyString());
+        AnswerResponse answerResponse = new AnswerResponse(CORRECT.name(), CORRECT.getStateMessage(), 1);
+        doReturn(answerResponse).when(answerService).checkAnswer(anyString(), any(), anyString());
 
         //when
         ResultActions perform = mvc.perform(post("/answer")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(answerRequest)));
+                .content(new ObjectMapper().writeValueAsString(answerResponse)));
         //then
         perform.andExpect(status().isOk());
     }
