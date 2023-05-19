@@ -24,13 +24,6 @@ jobs:
 
       - name: Start Redis
         run: sudo systemctl start redis-server
-      
-      - name: Install H2 database
-        run: |
-          wget -O h2.zip https://repo1.maven.org/maven2/com/h2database/h2/VERSION/h2-VERSION.jar unzip h2.zip -d h2
-    
-      - name: Start H2 database server
-        run: java -cp h2/h2-VERSION.jar org.h2.tools.Server
 
       - name: Pemission
         run: chmod +x ./gradlew
