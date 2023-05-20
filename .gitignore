@@ -36,6 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 
-application-jwt.properties
+application-jwt.yml
 
-application-oauth.properties
+application-oauth.yml

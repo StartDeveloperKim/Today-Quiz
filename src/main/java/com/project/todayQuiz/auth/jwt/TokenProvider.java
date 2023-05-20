@@ -12,16 +12,14 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.Cookie;
 import java.security.Key;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Slf4j
 @Component
-@PropertySource("classpath:application-jwt.properties")
+@PropertySource("classpath:application-jwt.yml")
 public class TokenProvider {
 
     private final Key accessTokenSecretKey;
