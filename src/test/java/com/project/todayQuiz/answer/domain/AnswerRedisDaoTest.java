@@ -11,7 +11,6 @@ import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-@ActiveProfiles("dev")
 @SpringBootTest
 class AnswerRedisDaoTest {
 
@@ -24,7 +23,7 @@ class AnswerRedisDaoTest {
         //given
         String answer = "answer";
         //when
-        answerRedisDao.saveAnswer(answer, Duration.ofSeconds(30));
+        answerRedisDao.saveAnswer(answer, Duration.ofSeconds(5));
         String savedAnswer = answerRedisDao.getAnswer();
         //then
         assertThat(answer).isEqualTo(savedAnswer);

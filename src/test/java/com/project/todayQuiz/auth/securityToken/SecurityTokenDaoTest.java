@@ -10,7 +10,6 @@ import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.*;
 
-@ActiveProfiles("dev")
 @SpringBootTest
 class SecurityTokenDaoTest {
 

@@ -9,7 +9,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ActiveProfiles("dev")
 @SpringBootTest
 class AuthInfoProviderTest {
 

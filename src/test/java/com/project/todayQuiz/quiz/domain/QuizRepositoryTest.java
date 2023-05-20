@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ActiveProfiles("dev")
 @DataJpaTest
 class QuizRepositoryTest {
 
