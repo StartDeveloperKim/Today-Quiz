@@ -1,6 +1,6 @@
-logging:
-  level:
-    root: INFO
+#logging:
+#  level:
+#    root: INFO
 
 server:
   port: 5000
@@ -10,7 +10,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mariadb://${rds.hostname}:${rds.port}/${rds.db.name}
+    url: jdbc:mariadb://${rds.hostname}:3306/${rds.db.name}?allowPublicKeyRetrieval=true&useSSL=false
     driver-class-name: org.mariadb.jdbc.Driver
     username: ${rds.username}
     password: ${rds.password}
