@@ -24,14 +24,6 @@ jobs:
 
       - name: Start Redis
         run: sudo systemctl start redis-server
-        
-      - name: Setup MySQL
-        uses: samin/mysql-action@v1
-        with:
-          character set server: 'utf8' 
-          mysql database: 'test' 
-          mysql user: 'user'
-          mysql password: ${{ secrets.MYSQL_PASSWORD }}
 
       - name: Pemission
         run: chmod +x ./gradlew
