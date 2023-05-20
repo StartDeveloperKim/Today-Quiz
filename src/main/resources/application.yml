@@ -1,6 +1,6 @@
 spring:
   profiles:
     include:
-      - prodOauth
-      - prodJwt
-    active: prod
+      - jwt
+      - oauth
+    active: dev
