@@ -3,4 +3,6 @@ spring:
     include:
       - prodJwt
       - prodOauth
+#      - jwt
+#      - oauth
     active: prod
